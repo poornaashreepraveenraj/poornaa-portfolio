@@ -1,5 +1,5 @@
 /**
- * FIGMA VALUE SCRUM THEME - Complete Portfolio JavaScript
+ * FIGMA SITE THEME & APPLE SCROLL PHYSICS - Master JavaScript
  */
 
 document.addEventListener('DOMContentLoaded', function () {
@@ -33,21 +33,62 @@ document.addEventListener('DOMContentLoaded', function () {
         navLinks.style.top = '100%';
         navLinks.style.left = '16px';
         navLinks.style.right = '16px';
-        navLinks.style.background = 'var(--color-card-bg)';
+        navLinks.style.background = 'var(--color-bg-soft)';
         navLinks.style.padding = '20px';
         navLinks.style.borderRadius = '20px';
         navLinks.style.border = '1px solid var(--color-border)';
         navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
       }
     });
+  }
 
-    navLinks.querySelectorAll('a').forEach(function(a){
-      a.addEventListener('click', function(){
-        if (window.innerWidth <= 768) {
-          navLinks.style.display = 'none';
+  // ---------- Scrollytelling Reveal Animations ----------
+  const revealElements = document.querySelectorAll('.reveal-up');
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver(function (entries, obs) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('in');
+          obs.unobserve(entry.target);
         }
       });
+    }, { threshold: 0.12 });
+
+    revealElements.forEach(function (el) {
+      observer.observe(el);
     });
+  } else {
+    revealElements.forEach(function (el) {
+      el.classList.add('in');
+    });
+  }
+
+  // ---------- Scroll-Spy Active Link Highlight ----------
+  const sections = document.querySelectorAll('section[id]');
+  const navAnchors = document.querySelectorAll('.nav-links a');
+
+  if (sections.length > 0 && navAnchors.length > 0) {
+    window.addEventListener('scroll', function () {
+      let currentSectionId = '';
+      sections.forEach(function (section) {
+        const sectionTop = section.offsetTop - 120;
+        const sectionHeight = section.offsetHeight;
+        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
+          currentSectionId = section.getAttribute('id');
+        }
+      });
+
+      if (currentSectionId) {
+        navAnchors.forEach(function (anchor) {
+          const href = anchor.getAttribute('href');
+          if (href === '#' + currentSectionId || href === currentSectionId + '.html') {
+            anchor.classList.add('active');
+          } else {
+            anchor.classList.remove('active');
+          }
+        });
+      }
+    }, { passive: true });
   }
 
   // ---------- Toast Notification ----------
@@ -65,7 +106,6 @@ document.addEventListener('DOMContentLoaded', function () {
     }, 3200);
   }
 
-  // Resume Download Button Placeholder
   const resumeBtn = document.getElementById('resumeBtn');
   if (resumeBtn) {
     resumeBtn.addEventListener('click', function (e) {
@@ -74,7 +114,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // ---------- Contact Form Submission Handler ----------
+  // ---------- Contact Form Handler ----------
   const contactForm = document.getElementById('contactForm');
   const formStatus = document.getElementById('formStatus');
 
@@ -94,9 +134,9 @@ document.addEventListener('DOMContentLoaded', function () {
       }
 
       formStatus.style.display = 'block';
-      formStatus.style.background = 'var(--color-accent-light)';
-      formStatus.style.color = 'var(--color-accent)';
-      formStatus.textContent = 'Thank you, ' + name + '! Your message is ready to send. Connect a service like Formspree to deliver form inputs to your inbox.';
+      formStatus.style.background = 'var(--color-bg-soft)';
+      formStatus.style.color = 'var(--color-kicker)';
+      formStatus.textContent = 'Thank you, ' + name + '! Your message is ready to send.';
       contactForm.reset();
     });
   }
