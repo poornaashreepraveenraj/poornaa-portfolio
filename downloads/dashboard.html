@@ -1,0 +1,387 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dashboard — IoTP</title>
+<link rel="stylesheet" href="shared.css">
+<style>
+  .dash-nav {
+    display: flex; align-items: center; justify-content: space-between;
+  }
+  .live-badge {
+    display: flex; align-items: center; gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px; color: var(--text-dim);
+  }
+  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 10px var(--orange); animation: pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+
+  .container { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+
+  .signout {
+    font-size: 13px; color: var(--text-faint); cursor: pointer; padding: 8px 16px;
+    border: 1px solid var(--card-border); border-radius: 999px; transition: all 0.2s var(--ease);
+  }
+  .signout:hover { color: var(--text); border-color: rgba(255,106,43,0.4); }
+
+  .grid-sensors {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 18px;
+    margin: 32px 0;
+  }
+  .sensor-card { padding: 26px 22px; opacity: 0; animation: rise 0.5s var(--ease) forwards; }
+  .sensor-card:nth-child(1) { animation-delay: 0.05s; }
+  .sensor-card:nth-child(2) { animation-delay: 0.1s; }
+  .sensor-card:nth-child(3) { animation-delay: 0.15s; }
+  @keyframes rise { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
+  .sensor-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 10px; }
+  .sensor-value {
+    font-family: 'Bebas Neue', sans-serif;
+    font-size: 48px;
+    background: var(--fire-gradient);
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    line-height: 1;
+  }
+  .sensor-unit { font-size: 16px; color: var(--text-dim); margin-left: 4px; }
+
+  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
+  @media (max-width: 750px) { .row2 { grid-template-columns: 1fr; } }
+
+  .panel { padding: 26px; }
+  .panel-title { font-size: 14px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+
+  /* Bulb orb */
+  .bulb-section { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px 0; }
+  .bulb-orb {
+    width: 90px; height: 90px; border-radius: 50%;
+    background: radial-gradient(circle at 35% 30%, #3a3230, #14100f);
+    border: 2px solid rgba(255,255,255,0.06);
+    position: relative;
+    transition: all 0.4s var(--ease);
+    margin-bottom: 18px;
+  }
+  .bulb-orb.on {
+    background: radial-gradient(circle at 35% 30%, #ffe9c4, var(--gold) 40%, var(--orange) 80%);
+    box-shadow: 0 0 50px rgba(255,150,50,0.7), 0 0 100px rgba(255,100,30,0.4);
+    border-color: transparent;
+    animation: bulbPulse 2s ease-in-out infinite;
+  }
+  @keyframes bulbPulse {
+    0%,100% { box-shadow: 0 0 50px rgba(255,150,50,0.7), 0 0 100px rgba(255,100,30,0.4); }
+    50% { box-shadow: 0 0 65px rgba(255,150,50,0.9), 0 0 130px rgba(255,100,30,0.55); }
+  }
+  .bulb-status { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; }
+
+  /* Toggle */
+  .toggle { position: relative; width: 56px; height: 32px; }
+  .toggle input { opacity: 0; width: 0; height: 0; }
+  .slider {
+    position: absolute; cursor: pointer; inset: 0;
+    background: rgba(255,255,255,0.1); border-radius: 999px;
+    transition: 0.3s var(--ease);
+  }
+  .slider::before {
+    content: ''; position: absolute; height: 24px; width: 24px; left: 4px; top: 4px;
+    background: white; border-radius: 50%; transition: 0.3s var(--ease);
+  }
+  input:checked + .slider { background: var(--fire-gradient); }
+  input:checked + .slider::before { transform: translateX(24px); }
+
+  /* Mode tabs */
+  .mode-tabs { display: flex; gap: 8px; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; margin-bottom: 20px; }
+  .mode-tab {
+    flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;
+    color: var(--text-dim); cursor: pointer; transition: all 0.25s var(--ease);
+  }
+  .mode-tab.active { background: var(--fire-gradient); color: #1a0a05; }
+
+  .threshold-row { display: none; }
+  .threshold-row.show { display: block; }
+  .threshold-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
+  .threshold-value { color: var(--orange); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
+  input[type="range"] {
+    width: 100%; height: 6px; border-radius: 999px; appearance: none;
+    background: linear-gradient(90deg, var(--gold), var(--orange), var(--red));
+    outline: none;
+  }
+  input[type="range"]::-webkit-slider-thumb {
+    appearance: none; width: 18px; height: 18px; border-radius: 50%;
+    background: white; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.4);
+  }
+
+  /* History table */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  th { text-align: left; padding: 10px 12px; color: var(--text-faint); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; border-bottom: 1px solid var(--card-border); }
+  td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
+  tr:hover td { color: var(--text); }
+
+  .export-btn { font-size: 13px; padding: 8px 18px; }
+
+  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-faint); font-size: 14px; }
+</style>
+</head>
+<body>
+  <div class="glow-bg"></div>
+
+  <nav class="nav">
+    <div class="nav-logo">IoTP</div>
+    <div class="dash-nav" style="gap: 20px;">
+      <div class="live-badge"><span class="live-dot"></span> LIVE</div>
+      <div class="signout" id="signOutBtn">Sign out</div>
+    </div>
+  </nav>
+
+  <div class="container">
+
+    <div class="grid-sensors">
+      <div class="card sensor-card">
+        <div class="sensor-label">Temperature</div>
+        <div><span class="sensor-value" id="tempVal">—</span><span class="sensor-unit">°C</span></div>
+      </div>
+      <div class="card sensor-card">
+        <div class="sensor-label">Humidity</div>
+        <div><span class="sensor-value" id="humVal">—</span><span class="sensor-unit">%</span></div>
+      </div>
+      <div class="card sensor-card">
+        <div class="sensor-label">Ambient Light</div>
+        <div><span class="sensor-value" id="ldrVal">—</span><span class="sensor-unit">lx</span></div>
+      </div>
+    </div>
+
+    <div class="row2">
+      <div class="card panel">
+        <div class="panel-title">Bulb Control</div>
+        <div class="bulb-section">
+          <div class="bulb-orb" id="bulbOrb"></div>
+          <div class="bulb-status" id="bulbStatus">OFF</div>
+          <label class="toggle">
+            <input type="checkbox" id="bulbToggle">
+            <span class="slider"></span>
+          </label>
+        </div>
+      </div>
+
+      <div class="card panel">
+        <div class="panel-title">Automation Mode</div>
+        <div class="mode-tabs">
+          <div class="mode-tab active" id="manualTab">Manual</div>
+          <div class="mode-tab" id="autoTab">Automatic</div>
+        </div>
+        <div class="threshold-row" id="thresholdRow">
+          <div class="threshold-label">
+            <span>Light threshold</span>
+            <span class="threshold-value" id="thresholdVal">500</span>
+          </div>
+          <input type="range" id="thresholdSlider" min="0" max="1023" value="500">
+          <p style="font-size: 12px; color: var(--text-faint); margin-top: 10px;">
+            Bulb turns ON automatically when light falls below this value.
+          </p>
+        </div>
+        <div id="manualNote" style="font-size: 12px; color: var(--text-faint);">
+          Control the bulb manually using the toggle.
+        </div>
+      </div>
+    </div>
+
+    <div class="card panel">
+      <div class="panel-title">
+        History
+        <button class="btn btn-ghost export-btn" id="exportBtn">Download CSV</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Temp (°C)</th>
+              <th>Humidity (%)</th>
+              <th>Light (lx)</th>
+              <th>Bulb</th>
+              <th>Mode</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody"></tbody>
+        </table>
+        <div class="empty-state" id="emptyState">No readings yet — waiting for your ESP32 to send data.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyDqE4kBjywupaCIgYl9QRCPz7cfUwUZYT0",
+      authDomain: "iotp-d8104.firebaseapp.com",
+      projectId: "iotp-d8104",
+      storageBucket: "iotp-d8104.firebasestorage.app",
+      messagingSenderId: "824642939920",
+      appId: "1:824642939920:web:7a4c06dc5e39fe92f7ee95",
+      databaseURL: "https://iotp-d8104-default-rtdb.firebaseio.com" // update once Realtime DB is created
+    };
+    firebase.initializeApp(firebaseConfig);
+    const auth = firebase.auth();
+    const db = firebase.firestore();
+
+    let currentUser = null;
+    let currentMode = 'manual';
+
+    auth.onAuthStateChanged((user) => {
+      if (!user) {
+        window.location.href = "login.html";
+        return;
+      }
+      currentUser = user;
+      initDashboard();
+    });
+
+    document.getElementById('signOutBtn').addEventListener('click', () => {
+      auth.signOut().then(() => window.location.href = "landing.html");
+    });
+
+    function initDashboard() {
+      // Realtime DB listeners (populated once ESP32 is sending data)
+      try {
+        const rtdb = firebase.database();
+
+        rtdb.ref('sensorData').limitToLast(1).on('child_added', (snap) => {
+          const d = snap.val();
+          if (d.temperature !== undefined) document.getElementById('tempVal').textContent = d.temperature;
+          if (d.humidity !== undefined) document.getElementById('humVal').textContent = d.humidity;
+          if (d.ldr !== undefined) document.getElementById('ldrVal').textContent = d.ldr;
+        });
+
+        rtdb.ref('sensorData').limitToLast(50).on('value', (snap) => {
+          const rows = [];
+          snap.forEach((child) => rows.unshift({ id: child.key, ...child.val() }));
+          renderHistory(rows);
+        });
+
+        rtdb.ref('appliances/bulb').on('value', (snap) => {
+          const on = snap.val() === true || (snap.val() && snap.val().state === true);
+          setBulbUI(on);
+        });
+      } catch (e) {
+        console.log('Realtime Database not yet connected:', e.message);
+      }
+
+      // Bulb toggle -> write to Realtime DB
+      document.getElementById('bulbToggle').addEventListener('change', (e) => {
+        const on = e.target.checked;
+        setBulbUI(on);
+        try {
+          firebase.database().ref('appliances/bulb').set(on);
+        } catch (err) { console.log(err); }
+      });
+
+      // Mode tabs
+      document.getElementById('manualTab').addEventListener('click', () => setMode('manual'));
+      document.getElementById('autoTab').addEventListener('click', () => setMode('automatic'));
+
+      // Threshold slider
+      const slider = document.getElementById('thresholdSlider');
+      slider.addEventListener('input', () => {
+        document.getElementById('thresholdVal').textContent = slider.value;
+      });
+      slider.addEventListener('change', () => {
+        saveSettings();
+      });
+
+      // Load saved settings
+      db.collection('users').doc(currentUser.uid).get().then((doc) => {
+        if (doc.exists) {
+          const data = doc.data();
+          if (data.mode) setMode(data.mode, false);
+          if (data.threshold !== undefined) {
+            slider.value = data.threshold;
+            document.getElementById('thresholdVal').textContent = data.threshold;
+          }
+        }
+      });
+
+      // CSV export
+      document.getElementById('exportBtn').addEventListener('click', exportCSV);
+    }
+
+    function setBulbUI(on) {
+      document.getElementById('bulbOrb').classList.toggle('on', on);
+      document.getElementById('bulbStatus').textContent = on ? 'ON' : 'OFF';
+      document.getElementById('bulbToggle').checked = on;
+    }
+
+    function setMode(mode, save = true) {
+      currentMode = mode;
+      document.getElementById('manualTab').classList.toggle('active', mode === 'manual');
+      document.getElementById('autoTab').classList.toggle('active', mode === 'automatic');
+      document.getElementById('thresholdRow').classList.toggle('show', mode === 'automatic');
+      document.getElementById('manualNote').style.display = mode === 'manual' ? 'block' : 'none';
+      if (save) saveSettings();
+      try {
+        firebase.database().ref('settings/mode').set(mode);
+      } catch (e) {}
+    }
+
+    function saveSettings() {
+      const threshold = parseInt(document.getElementById('thresholdSlider').value, 10);
+      db.collection('users').doc(currentUser.uid).set({
+        mode: currentMode,
+        threshold: threshold
+      }, { merge: true });
+      try {
+        firebase.database().ref('settings/threshold').set(threshold);
+      } catch (e) {}
+    }
+
+    let historyCache = [];
+    function renderHistory(rows) {
+      historyCache = rows;
+      const tbody = document.getElementById('historyBody');
+      const empty = document.getElementById('emptyState');
+      tbody.innerHTML = '';
+      if (!rows.length) {
+        empty.style.display = 'block';
+        return;
+      }
+      empty.style.display = 'none';
+      rows.forEach((r) => {
+        const tr = document.createElement('tr');
+        const time = r.timestamp ? new Date(r.timestamp).toLocaleString() : '—';
+        tr.innerHTML = `
+          <td>${time}</td>
+          <td>${r.temperature ?? '—'}</td>
+          <td>${r.humidity ?? '—'}</td>
+          <td>${r.ldr ?? '—'}</td>
+          <td>${r.bulb ? 'ON' : 'OFF'}</td>
+          <td>${r.mode ?? '—'}</td>
+        `;
+        tbody.appendChild(tr);
+      });
+    }
+
+    function exportCSV() {
+      if (!historyCache.length) {
+        alert('No data to export yet.');
+        return;
+      }
+      let csv = 'Timestamp,Temperature,Humidity,LDR,Bulb,Mode\n';
+      historyCache.forEach((r) => {
+        const time = r.timestamp ? new Date(r.timestamp).toISOString() : '';
+        csv += `${time},${r.temperature ?? ''},${r.humidity ?? ''},${r.ldr ?? ''},${r.bulb ? 'ON' : 'OFF'},${r.mode ?? ''}\n`;
+      });
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `iotp-history-${Date.now()}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
