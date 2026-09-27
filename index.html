@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Poornaa Shree Praveenraj — Portfolio</title>
-<meta name="description" content="Portfolio of Poornaa Shree Praveenraj, CS undergraduate focused on Machine Learning and Data Analytics.">
+<meta name="description" content="Portfolio of Poornaa Shree Praveenraj, CS undergraduate focused on Machine Learning, Data Analytics, and Financial Risk Management.">
 
-<!-- Google Fonts: Crimson Text (Serif Display), DM Sans (Clean Body), Roboto Mono (Mono Tags) -->
+<!-- Google Fonts: Space Grotesk (Display Headings), Italianno (Calligraphic Script Flourish), Plus Jakarta Sans (Body), Space Mono (Monospace Tags) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Crimson+Text:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
 <script src="script.js" defer></script>
@@ -18,416 +18,529 @@
 
 <a href="#home" class="skip-link">Skip to content</a>
 
-<!-- FLOATING GLASS PILL NAVBAR -->
-<header class="site-nav" id="siteNav">
-  <div class="nav-floating-pill">
-    <a href="#home" class="logo">Poornaa Shree Praveenraj</a>
-    <ul class="nav-links">
-      <li><a href="#home" class="active">Home</a></li>
-      <li><a href="#about">About</a></li>
-      <li><a href="#skills">Skills</a></li>
-      <li><a href="#summary">Experience &amp; Edu</a></li>
-      <li><a href="#protosem">ProtoSem</a></li>
-      <li><a href="#projects">Projects</a></li>
-      <li><a href="#contact">Contact</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Toggle Navigation">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+<!-- FLOATING GLASSMORPHISM PILL NAVBAR -->
+<header class="site-header">
+  <div class="pill-nav-container">
+    <a href="#home" class="pill-nav-btn pill-brand">
+      <span>POORNAA SHREE</span>
+    </a>
+    <button class="pill-nav-btn pill-menu" id="menuToggle" aria-label="Toggle Navigation menu">
+      <span class="menu-icon">≡</span> <span>MENU</span>
+    </button>
   </div>
+
+  <!-- Mobile / Desktop Expanded Dropdown Menu -->
+  <nav class="nav-dropdown" id="navDropdown" aria-label="Main Navigation">
+    <a href="#home">00 — HOME</a>
+    <a href="#about">01 — ABOUT ME</a>
+    <a href="#skills">02 — WHAT I DO (SKILLS)</a>
+    <a href="#different">03 — WHY ME?</a>
+    <a href="#projects">04 — PORTFOLIO</a>
+    <a href="#experience">05 — EXPERIENCE &amp; EDU</a>
+    <a href="#protosem">06 — PROTOSEM LOGS</a>
+    <a href="#contact">07 — CONNECTION</a>
+  </nav>
 </header>
 
 <main id="home">
-  <!-- HERO SECTION -->
+  <!-- HERO SECTION WITH LIQUID GLASS VISUAL & HOLOGRAPHIC AURAS -->
   <section class="hero-section">
-    <div class="container reveal-up">
-      <div class="kicker-mono">Coimbatore, Tamil Nadu, India</div>
-      <h1 class="hero-title">Poornaa Shree<br>Praveenraj.</h1>
-      <div class="hero-tagline">Computer Science Undergraduate | Machine Learning &amp; Data Analytics</div>
-      <p class="hero-subtitle">Computer Science undergraduate specializing in data analytics and the foundations of machine learning. Passionate about leveraging data to solve complex problems, with a strong interest in financial risk management.</p>
+    <div class="hero-aura hero-aura-1"></div>
+    <div class="hero-aura hero-aura-2"></div>
+    
+    <div class="container hero-container">
+      <div class="hero-left-ticker">
+        <div class="ticker-badge">LOCATION</div>
+        <div class="ticker-val">Coimbatore, India</div>
+        
+        <div class="ticker-badge" style="margin-top:28px;">SPECIALIZATIONS</div>
+        <ul class="hero-skills-stack">
+          <li>MACHINE LEARNING</li>
+          <li>DATA ANALYTICS</li>
+          <li>FINANCIAL RISK</li>
+          <li>PYTHON &amp; SQL</li>
+          <li>PREDICTIVE MODELING</li>
+          <li>SYSTEM ARCHITECTURE</li>
+        </ul>
+      </div>
       
-      <div style="display:flex; justify-content:center; gap:16px;">
-        <a href="#projects" class="btn-cta">View Projects</a>
-        <a href="#contact" class="btn-cta" style="background:transparent; color:var(--color-text); border:1px solid var(--color-border);">Contact Me →</a>
+      <div class="hero-center-content">
+        <div class="meta-tag">COMPUTER SCIENCE UNDERGRADUATE // DATA ANALYTICS &amp; ML</div>
+        <h1 class="hero-display-title">
+          P<span class="flourish">O</span>ORNAA SHREE<br>
+          PRAVEENRAJ<span class="flourish">.</span>
+        </h1>
+        
+        <p class="hero-description">
+          Computer Science undergraduate specializing in data analytics and machine learning foundations. Passionate about transforming raw complex data into strategic insights, with a core focus on financial risk management.
+        </p>
+        
+        <div class="hero-actions">
+          <a href="#projects" class="btn-primary-gradient">EXPLORE WORKS →</a>
+          <a href="#contact" class="btn-secondary-dark">CONTACT ME</a>
+        </div>
+      </div>
+
+      <div class="hero-right-visual">
+        <div class="glass-frame">
+          <img src="liquid_glass_ui.jpg" alt="Liquid Glass UI Reference" class="liquid-glass-img">
+          <div class="glass-glow-ring"></div>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- MARQUEE TECH RIBBON -->
-  <div class="marquee-wrapper">
-    <div class="marquee-content">
-      <div class="marquee-item">Python</div>
-      <div class="marquee-item">Machine Learning</div>
-      <div class="marquee-item">Data Analytics</div>
-      <div class="marquee-item">SQL / MySQL</div>
-      <div class="marquee-item">Financial Risk Management</div>
-      <div class="marquee-item">C Programming</div>
-      <div class="marquee-item">Data Structures &amp; Algorithms</div>
-      <div class="marquee-item">Database Management Systems</div>
+  <!-- MARQUEE TICKER RIBBON (HOT GRADIENT FILL) -->
+  <div class="marquee-ribbon">
+    <div class="marquee-track">
+      <span>MACHINE LEARNING</span> <span class="bullet">•</span>
+      <span>DATA ANALYTICS</span> <span class="bullet">•</span>
+      <span>FINANCIAL RISK MANAGEMENT</span> <span class="bullet">•</span>
+      <span>PYTHON &amp; SQL MODELING</span> <span class="bullet">•</span>
+      <span>KUMARAGURU COLLEGE OF TECHNOLOGY</span> <span class="bullet">•</span>
+      <span>DATA STRUCTURES &amp; ALGORITHMS</span> <span class="bullet">•</span>
       <!-- Duplicate for seamless loop -->
-      <div class="marquee-item">Python</div>
-      <div class="marquee-item">Machine Learning</div>
-      <div class="marquee-item">Data Analytics</div>
-      <div class="marquee-item">SQL / MySQL</div>
-      <div class="marquee-item">Financial Risk Management</div>
-      <div class="marquee-item">C Programming</div>
-      <div class="marquee-item">Data Structures &amp; Algorithms</div>
-      <div class="marquee-item">Database Management Systems</div>
+      <span>MACHINE LEARNING</span> <span class="bullet">•</span>
+      <span>DATA ANALYTICS</span> <span class="bullet">•</span>
+      <span>FINANCIAL RISK MANAGEMENT</span> <span class="bullet">•</span>
+      <span>PYTHON &amp; SQL MODELING</span> <span class="bullet">•</span>
+      <span>KUMARAGURU COLLEGE OF TECHNOLOGY</span> <span class="bullet">•</span>
+      <span>DATA STRUCTURES &amp; ALGORITHMS</span> <span class="bullet">•</span>
     </div>
   </div>
 
   <!-- ABOUT SECTION -->
-  <section class="section" id="about">
+  <section class="section-block" id="about">
     <div class="container">
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <div class="kicker-mono">01 — ABOUT</div>
-          <h2>Professional Background</h2>
+      <div class="section-label">01 — PROFESSIONAL PROFILE</div>
+      <h2 class="section-heading">AB<span class="flourish">O</span>UT ME</h2>
+      
+      <div class="about-grid-layout">
+        <div class="about-card-photo">
+          <div class="photo-placeholder-box">
+            <div class="avatar-initials">PS</div>
+            <div class="photo-overlay-tag">B.E. CSE (2024–2028)</div>
+          </div>
         </div>
-      </div>
-
-      <div class="about-grid">
-        <div class="about-text reveal-up">
-          <p>I am currently pursuing a B.E. CSE at Kumaraguru College of Technology (2024–2028), where I am building a robust technical foundation in core computer science, data analytics, and the foundations of machine learning.</p>
-          <p>My primary focus lies in transforming raw data into strategic, actionable decisions. I am deeply drawn to the mathematical and problem-solving aspects of machine learning, with a specific interest in applying these analytical skills to risk management in finance.</p>
-          <p>Outside of my coursework, I am actively applying these concepts through hands-on projects. I am dedicated to bridging the gap between theoretical knowledge and real-world application as I build toward a career in data analytics and machine learning.</p>
-        </div>
-
-        <div class="bento-card reveal-up">
-          <h3>Poornaa Shree Praveenraj</h3>
-          <p style="color:var(--color-text-muted);">Computer Science &amp; Engineering Student</p>
-          <dl>
-            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:0.5px solid var(--color-border); font-size:14px;">
-              <dt style="color:var(--color-text-muted);">Degree</dt>
-              <dd style="font-weight:600;">B.E. CSE (2024–2028)</dd>
+        
+        <div class="about-bio-text">
+          <p class="lead-p">
+            I am currently pursuing a B.E. in Computer Science and Engineering at Kumaraguru College of Technology (2024–2028), building a robust technical foundation in core computer science, data analytics, and machine learning foundations.
+          </p>
+          <p>
+            My primary focus lies in transforming raw data into strategic, actionable decisions. I am deeply drawn to the mathematical and problem-solving aspects of machine learning, with a specific interest in applying analytical models to risk management in finance.
+          </p>
+          <p>
+            Outside of coursework, I am actively applying these concepts through hands-on projects, open-source work, and competitive hackathons.
+          </p>
+          
+          <div class="about-meta-table">
+            <div class="meta-row">
+              <span class="meta-key">DEGREE</span>
+              <span class="meta-val">B.E. Computer Science &amp; Engineering</span>
             </div>
-            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:0.5px solid var(--color-border); font-size:14px;">
-              <dt style="color:var(--color-text-muted);">Institution</dt>
-              <dd style="font-weight:600;">Kumaraguru College of Tech</dd>
+            <div class="meta-row">
+              <span class="meta-key">INSTITUTION</span>
+              <span class="meta-val">Kumaraguru College of Technology</span>
             </div>
-            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:0.5px solid var(--color-border); font-size:14px;">
-              <dt style="color:var(--color-text-muted);">Primary Focus</dt>
-              <dd style="font-weight:600;">Data Analytics &amp; ML</dd>
+            <div class="meta-row">
+              <span class="meta-key">PRIMARY FOCUS</span>
+              <span class="meta-val">Data Analytics &amp; Machine Learning</span>
             </div>
-            <div style="display:flex; justify-content:space-between; padding:12px 0; border-bottom:0.5px solid var(--color-border); font-size:14px;">
-              <dt style="color:var(--color-text-muted);">Secondary Focus</dt>
-              <dd style="font-weight:600;">Financial Risk Management</dd>
+            <div class="meta-row">
+              <span class="meta-key">SECONDARY FOCUS</span>
+              <span class="meta-val">Financial Risk Management</span>
             </div>
-          </dl>
-          <a href="#" class="btn-cta" id="resumeBtn" style="width:100%; text-align:center; margin-top:24px;">Download Resume (PDF)</a>
+          </div>
+          
+          <a href="#contact" class="btn-primary-gradient" style="margin-top:28px;">LET'S WORK TOGETHER</a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- SKILLS BENTO SECTION -->
-  <section class="section" id="skills">
+  <!-- SERVICES & PROFICIENCIES ("WHAT I DO") -->
+  <section class="section-block" id="skills">
     <div class="container">
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <div class="kicker-mono">02 — SKILLS</div>
-          <h2>Technical Proficiencies</h2>
-          <p class="sub">Core technical competencies developed through rigorous academic coursework and applied self-study.</p>
+      <div class="section-label">02 — TECHNICAL SERVICES &amp; PROFICIENCIES</div>
+      <h2 class="section-heading">WHAT I D<span class="flourish">O</span></h2>
+      
+      <div class="services-6grid">
+        <!-- 001 -->
+        <div class="service-card">
+          <div class="service-orb-badge">
+            <div class="orb-icon"></div>
+            <span class="service-num">001</span>
+          </div>
+          <h3>MACHINE LEARNING</h3>
+          <ul class="service-checklist">
+            <li>1. Feature engineering &amp; data preprocessing</li>
+            <li>2. Supervised &amp; unsupervised learning models</li>
+            <li>3. Model evaluation &amp; hyperparameter tuning</li>
+            <li>4. Behavioral drift detection algorithms</li>
+            <li>5. Classification &amp; regression workflows</li>
+            <li>6. Predictive analytics pipelines in Python</li>
+            <li>7. Statistical pattern recognition</li>
+            <li>8. Scikit-learn &amp; numerical modeling</li>
+          </ul>
+        </div>
+
+        <!-- 002 -->
+        <div class="service-card">
+          <div class="service-orb-badge">
+            <div class="orb-icon"></div>
+            <span class="service-num">002</span>
+          </div>
+          <h3>DATA ANALYTICS</h3>
+          <ul class="service-checklist">
+            <li>1. Data extraction, cleaning &amp; transformation</li>
+            <li>2. Exploratory Data Analysis (EDA)</li>
+            <li>3. SQL querying &amp; database analytics</li>
+            <li>4. Data visualization &amp; dashboard insights</li>
+            <li>5. Statistical hypothesis testing</li>
+            <li>6. Trend forecasting &amp; metrics tracking</li>
+            <li>7. Decision-support data pipelines</li>
+            <li>8. Business intelligence reporting</li>
+          </ul>
+        </div>
+
+        <!-- 003 -->
+        <div class="service-card">
+          <div class="service-orb-badge">
+            <div class="orb-icon"></div>
+            <span class="service-num">003</span>
+          </div>
+          <h3>FINANCIAL RISK</h3>
+          <ul class="service-checklist">
+            <li>1. Risk management principles in finance</li>
+            <li>2. Quantitative risk assessment models</li>
+            <li>3. Managerial economics &amp; accounting</li>
+            <li>4. Financial data analysis &amp; metrics</li>
+            <li>5. Portfolio risk modeling concepts</li>
+            <li>6. Decision modeling under uncertainty</li>
+            <li>7. Risk mitigation strategy formulation</li>
+          </ul>
+        </div>
+
+        <!-- 004 -->
+        <div class="service-card">
+          <div class="service-orb-badge">
+            <div class="orb-icon"></div>
+            <span class="service-num">004</span>
+          </div>
+          <h3>DATABASE SYSTEMS</h3>
+          <ul class="service-checklist">
+            <li>1. Relational database design (RDBMS)</li>
+            <li>2. Schema normalization &amp; optimization</li>
+            <li>3. MySQL query building &amp; indexing</li>
+            <li>4. Data integrity &amp; constraint logic</li>
+            <li>5. Transaction management &amp; ACID rules</li>
+            <li>6. Database administrative foundations</li>
+          </ul>
+        </div>
+
+        <!-- 005 -->
+        <div class="service-card">
+          <div class="service-orb-badge">
+            <div class="orb-icon"></div>
+            <span class="service-num">005</span>
+          </div>
+          <h3>PROGRAMMING</h3>
+          <ul class="service-checklist">
+            <li>1. Python (Data Science &amp; Automation)</li>
+            <li>2. C Programming (Low-level optimization)</li>
+            <li>3. Data Structures &amp; Algorithms (DSA)</li>
+            <li>4. Modular code architecture &amp; clean code</li>
+            <li>5. Algorithmic problem solving</li>
+            <li>6. Git version control &amp; GitHub workflows</li>
+          </ul>
+        </div>
+
+        <!-- 006 -->
+        <div class="service-card">
+          <div class="service-orb-badge">
+            <div class="orb-icon"></div>
+            <span class="service-num">006</span>
+          </div>
+          <h3>RESEARCH &amp; PROTOTYPING</h3>
+          <ul class="service-checklist">
+            <li>1. Rapid physical &amp; digital prototyping</li>
+            <li>2. 3D CAD modeling &amp; Bambu Studio 3D print slicing</li>
+            <li>3. Frugal innovation &amp; resource constraint solving</li>
+            <li>4. Design thinking &amp; empathy-driven UX</li>
+            <li>5. Competitor benchmarking &amp; hackathons</li>
+            <li>6. Technical documentation &amp; weekly logs</li>
+          </ul>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="bento-grid">
-        <div class="bento-card col-span-7 reveal-up">
-          <div>
-            <div class="kicker-mono">PROGRAMMING LANGUAGES</div>
-            <h3>Core Languages</h3>
-            <div class="bento-val-huge">Python, C, SQL</div>
+  <!-- VALUE PROPOSITION ACCORDION ("WHAT MAKES ME DIFFERENT?") -->
+  <section class="section-block" id="different">
+    <div class="container">
+      <div class="section-label">03 — CORE VALUES &amp; APPROACH</div>
+      <h2 class="section-heading">WHAT MAKES ME DIFFERENT<span class="flourish">?</span></h2>
+      
+      <div class="diff-accordion-grid">
+        <div class="diff-item active">
+          <div class="diff-header" onclick="toggleDiff(this)">
+            <span class="diff-num">[1]</span>
+            <span class="diff-title">STRATEGIC</span>
+            <span class="diff-icon">−</span>
           </div>
-          <p style="margin-top:16px;">Applied for machine learning modeling, data analytics workflows, and database querying.</p>
-        </div>
-
-        <div class="bento-card col-span-5 reveal-up">
-          <div>
-            <div class="kicker-mono">TOOLS &amp; FRAMEWORKS</div>
-            <h3>Database Engine</h3>
-            <div class="bento-val-huge">MySQL</div>
-          </div>
-          <p style="margin-top:16px;">Relational database design, SQL querying, and schema optimization.</p>
-        </div>
-
-        <div class="bento-card col-span-12 reveal-up">
-          <div>
-            <div class="kicker-mono">CORE DOMAINS</div>
-            <h3>Domain Focus &amp; Specialization</h3>
-            <div class="bento-val-huge" style="font-size:clamp(22px, 3.2vw, 36px);">Foundations of Machine Learning, Data Analytics &amp; Database Management</div>
+          <div class="diff-body">
+            <p>Analytical decisions driven by clear objectives, not assumptions. Every model and data pipeline is engineered to solve genuine problems and deliver measurable clarity.</p>
           </div>
         </div>
 
-        <div class="bento-card col-span-12 reveal-up">
-          <div>
-            <div class="kicker-mono">RELEVANT ACADEMIC COURSEWORK</div>
-            <h3>Coursework Grid</h3>
-            <div class="coursework-chips">
-              <span class="chip">Data Structures &amp; Algorithms</span>
-              <span class="chip">AI &amp; Machine Learning Foundations</span>
-              <span class="chip">Database Management Systems</span>
-              <span class="chip">Managerial Economics &amp; Financial Accounting Fundamentals</span>
-              <span class="chip">Risk Management in Finance</span>
-            </div>
+        <div class="diff-item">
+          <div class="diff-header" onclick="toggleDiff(this)">
+            <span class="diff-num">[2]</span>
+            <span class="diff-title">ANALYTICAL</span>
+            <span class="diff-icon">+</span>
+          </div>
+          <div class="diff-body">
+            <p>Rigorous mathematical foundation and empirical data investigation. Extracting signal from noise with clean statistical principles.</p>
+          </div>
+        </div>
+
+        <div class="diff-item highlight-purple">
+          <div class="diff-header" onclick="toggleDiff(this)">
+            <span class="diff-num">[3]</span>
+            <span class="diff-title">PRODUCT-MINDED</span>
+            <span class="diff-icon">+</span>
+          </div>
+          <div class="diff-body">
+            <p>Thinking beyond isolated code — focusing on full-stack data logic, end-user flows, and long-term scalability. Building systems that scale.</p>
+          </div>
+        </div>
+
+        <div class="diff-item">
+          <div class="diff-header" onclick="toggleDiff(this)">
+            <span class="diff-num">[4]</span>
+            <span class="diff-title">IMPACT-DRIVEN</span>
+            <span class="diff-icon">+</span>
+          </div>
+          <div class="diff-body">
+            <p>Focused on real-world outcomes — accuracy, reliability, and optimization. Data science that drives real value.</p>
+          </div>
+        </div>
+
+        <div class="diff-item">
+          <div class="diff-header" onclick="toggleDiff(this)">
+            <span class="diff-num">[5]</span>
+            <span class="diff-title">BUSINESS &amp; RISK-AWARE</span>
+            <span class="diff-icon">+</span>
+          </div>
+          <div class="diff-body">
+            <p>Understanding market context, financial risk metrics, and organizational goals. Aligning tech solutions with strategic financial intelligence.</p>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- EXPERIENCE CONNECTED TIMELINE -->
-  <section class="section" id="summary">
+  <!-- INTERACTIVE PROJECTS SHOWCASE ("PORTFOLIO") -->
+  <section class="section-block" id="projects">
     <div class="container">
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <div class="kicker-mono">03 — EXPERIENCE &amp; EDUCATION</div>
-          <h2>Work Experience &amp; Education</h2>
-        </div>
-      </div>
-
-      <div class="timeline-connected-container">
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">JUN 2026 – AUG 2026</div>
-            <h3>Machine Learning Intern</h3>
-            <div class="org">Corizo Edutech</div>
-            <ul>
-              <li>Implemented end-to-end ML workflows in Python, performing data preprocessing, feature engineering, and model evaluation to improve performance.</li>
-              <li>Developed predictive models to analyze structured datasets and extract actionable insights for data-driven problem solving.</li>
-              <li>Applied foundational machine learning algorithms and data analytics frameworks to process raw data and validate model metrics.</li>
-            </ul>
+      <div class="section-label">04 — FEATURED WORKS &amp; CASE STUDIES</div>
+      <h2 class="section-heading">P<span class="flourish">O</span>RTFOLIO</h2>
+      
+      <div class="projects-list-accordion">
+        <!-- Project 01 -->
+        <div class="project-list-row">
+          <div class="project-row-left">
+            <span class="project-num">01</span>
+            <div class="project-main-info">
+              <h3 class="project-name">DriftTune: Behavioral Drift Detection</h3>
+              <p class="project-subtext">Detects long-term music preference shifts using Last.fm listening history &amp; Spotify audio features.</p>
+            </div>
+          </div>
+          <div class="project-row-right">
+            <span class="project-cat">MACHINE LEARNING / DATA ANALYTICS</span>
+            <span class="project-year">2026</span>
+            <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="project-link-btn">VIEW GITHUB →</a>
           </div>
         </div>
 
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">2024 – 2028</div>
-            <h3>B.E. CSE</h3>
-            <div class="org">Kumaraguru College of Technology</div>
-            <ul>
-              <li>Focus: Data Analytics &amp; Foundations of Machine Learning</li>
-              <li>Key Coursework: Data Structures &amp; Algorithms, Database Management Systems (DBMS), AI &amp; Machine Learning Foundations, Managerial Economics &amp; Financial Accounting, Risk Management in Finance.</li>
-            </ul>
+        <!-- Project 02 -->
+        <div class="project-list-row">
+          <div class="project-row-left">
+            <span class="project-num">02</span>
+            <div class="project-main-info">
+              <h3 class="project-name">RoadSOS: Emergency Response System</h3>
+              <p class="project-subtext">Offline-capable platform optimizing trauma center ranking &amp; ambulance dispatch for IIT Madras Hackathon.</p>
+            </div>
+          </div>
+          <div class="project-row-right">
+            <span class="project-cat">DATA ANALYTICS / ALGORITHMS</span>
+            <span class="project-year">2026</span>
+            <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="project-link-btn">VIEW GITHUB →</a>
           </div>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PROTOSEM CONNECTED TIMELINE -->
-  <section class="section" id="protosem">
+  <!-- EXPERIENCE & EDUCATION -->
+  <section class="section-block" id="experience">
     <div class="container">
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <div class="kicker-mono">04 — PROTOSEM LOGS</div>
-          <h2>Weekly Learning &amp; Project Logs</h2>
-          <p class="sub">Graduate Innovation Engineer Certification — Weekly Progress &amp; Reflective Logs</p>
+      <div class="section-label">05 — CAREER &amp; EDUCATION</div>
+      <h2 class="section-heading">EXPERIENCE &amp; EDUCATI<span class="flourish">O</span>N</h2>
+      
+      <div class="timeline-container">
+        <div class="timeline-card">
+          <div class="timeline-badge">JUN 2026 – AUG 2026</div>
+          <h3 class="timeline-role">Machine Learning Intern</h3>
+          <div class="timeline-org">Corizo Edutech</div>
+          <ul class="timeline-bullets">
+            <li>Implemented end-to-end ML workflows in Python, performing data preprocessing, feature engineering, and model evaluation.</li>
+            <li>Developed predictive models to analyze structured datasets and extract actionable insights for data-driven problem solving.</li>
+            <li>Applied foundational machine learning algorithms and data analytics frameworks to process raw data and validate metrics.</li>
+          </ul>
+        </div>
+
+        <div class="timeline-card">
+          <div class="timeline-badge">2024 – 2028</div>
+          <h3 class="timeline-role">B.E. Computer Science &amp; Engineering</h3>
+          <div class="timeline-org">Kumaraguru College of Technology</div>
+          <ul class="timeline-bullets">
+            <li>Focus: Data Analytics &amp; Foundations of Machine Learning</li>
+            <li>Key Coursework: Data Structures &amp; Algorithms, Database Management Systems (DBMS), AI &amp; ML Foundations, Managerial Economics &amp; Financial Accounting, Risk Management in Finance.</li>
+          </ul>
         </div>
       </div>
+    </div>
+  </section>
 
-      <div class="timeline-connected-container">
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">WEEK 0 | JULY 2026</div>
-            <h3>16 Personalities Assessment</h3>
-            <p class="desc">Completed the 16 Personalities assessment as an orientation exercise for the semester, reflecting on working style and how it applies to engineering project work.</p>
-            <div class="log-meta-grid">
-              <div class="log-meta-box">
-                <h4>Topics Learned</h4>
-                <p>Personality framework basics and how the assessment is structured; Reflecting on personal working style in a technical/team context; Setting intentions for the semester's ProtoSem goals.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Key Takeaways</h4>
-                <p>Confirmed a preference for hands-on, output-first work; Identified areas to be mindful of when collaborating in teams; Used the exercise to set a baseline before diving into technical weeks.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Reflection</h4>
-                <p>A useful starting point for the semester — understanding how I naturally work helps me plan how to approach the more technical weeks ahead, especially around pacing and how I document progress.</p>
-              </div>
-            </div>
+  <!-- PROTOSEM WEEKLY LOGS -->
+  <section class="section-block" id="protosem">
+    <div class="container">
+      <div class="section-label">06 — INNOVATION ENGINEER LOGS</div>
+      <h2 class="section-heading">PR<span class="flourish">O</span>TOSEM LOGS</h2>
+      <p class="section-subtext">Graduate Innovation Engineer Certification — Weekly Progress &amp; Reflective Logs</p>
+      
+      <div class="protosem-grid">
+        <!-- Week 0 -->
+        <div class="protosem-card">
+          <div class="log-week-tag">WEEK 0 | JULY 2026</div>
+          <h3>16 Personalities Assessment</h3>
+          <p class="log-intro">Completed orientation personality framework assessment to establish personal working style and team collaboration baselines.</p>
+          <div class="log-detail-box">
+            <strong>Topics:</strong> Personality frameworks, technical team collaboration, setting ProtoSem semester goals.<br>
+            <strong>Takeaway:</strong> Output-first hands-on work style confirmed; baseline set for pacing and technical logs.
           </div>
         </div>
 
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">WEEK 1 | JULY 2026</div>
-            <h3>5S Methodology &amp; Professional Portfolio Development</h3>
-            <p class="desc">Focused on establishing foundational organization by exploring the 5S principles for physical engineering workspaces, alongside developing a professional portfolio website to showcase my overall technical profile and document the 20-week program.</p>
-            <div class="log-meta-grid">
-              <div class="log-meta-box">
-                <h4>Topics Learned</h4>
-                <p>The 5S framework encompassing Sort, Straighten, Shine, Standardize, and Sustain; methods to clean the workspace, check equipment, and establish clear rules for organization; structural design and UI/UX fundamentals for building a comprehensive professional portfolio website.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Key Takeaways</h4>
-                <p>Removing unneeded items and giving every essential tool a clear place drastically reduces project friction; turning organizational rules into a daily routine is critical for sustained efficiency; structuring a physical workspace translates perfectly into structuring a clean, easily navigable digital portfolio.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Reflection</h4>
-                <p>Organizing my physical and digital environments simultaneously set a strong baseline; building the website serves a highly effective dual purpose, acting as a live log for this 20-week program while establishing a polished, professional profile for my broader career in tech.</p>
-              </div>
-            </div>
+        <!-- Week 1 -->
+        <div class="protosem-card">
+          <div class="log-week-tag">WEEK 1 | JULY 2026</div>
+          <h3>5S Methodology &amp; Professional Portfolio</h3>
+          <p class="log-intro">Applied physical 5S organization principles and designed professional digital portfolio architecture to showcase 20-week logs.</p>
+          <div class="log-detail-box">
+            <strong>Topics:</strong> Sort, Straighten, Shine, Standardize, Sustain + UI/UX architecture.<br>
+            <strong>Takeaway:</strong> Workspace organization directly improves digital coding efficiency and portfolio structure.
           </div>
         </div>
 
         <!-- Week 2 -->
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">WEEK 2 | AUGUST 2026</div>
-            <h3>Beyond Coding: Innovation, Prototyping &amp; Design Thinking</h3>
-            <p class="desc">Explored software development beyond programming through frugal innovation, computational thinking, rapid prototyping, and user-centred design.</p>
-            <div class="log-meta-grid">
-              <div class="log-meta-box">
-                <h4>Topics Learned</h4>
-                <p>Frugal innovation and resource-constrained problem solving; Logical reasoning, problem decomposition, and structured problem solving; Visual programming and event-driven logic using Scratch; Mobile application development and UI design using MIT App Inventor; Design Thinking framework including empathy, problem definition, ideation, prototyping, and testing.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Key Takeaways</h4>
-                <p>Applied computational thinking while working collaboratively in the five-member Think Like a Coder Challenge; Understood how event-driven programming can be used to build interactive applications; Gained hands-on experience in rapid mobile application prototyping and user-focused UI design; Learned how Design Thinking can be integrated with software development to identify and solve user problems.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Reflection</h4>
-                <p>This week helped me connect technical development with the problem-solving process behind it. Working with Scratch and MIT App Inventor gave me practical exposure to building interactive prototypes, while the coding challenge strengthened my approach to breaking down problems. Design Thinking also helped me understand why identifying the user problem should come before developing the technical solution.</p>
-              </div>
-            </div>
+        <div class="protosem-card">
+          <div class="log-week-tag">WEEK 2 | AUGUST 2026</div>
+          <h3>Beyond Coding: Innovation &amp; Prototyping</h3>
+          <p class="log-intro">Explored computational thinking, frugal innovation, Scratch event-driven logic, MIT App Inventor UI, and Design Thinking.</p>
+          <div class="log-detail-box">
+            <strong>Topics:</strong> Frugal innovation, Think Like a Coder challenge, mobile UI prototyping, Design Thinking.<br>
+            <strong>Takeaway:</strong> Defining the core user problem must always precede technical code development.
           </div>
         </div>
 
         <!-- Week 3 -->
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">WEEK 3 | AUGUST 2026</div>
-            <h3>Electrical Systems, Fusion 360 CAD &amp; Physical Prototyping</h3>
-            <p class="desc">Explored electrical and electronic system fundamentals alongside introductory 3D CAD modeling in Fusion 360, physical prototyping with toy clay toolkits, and paper rocket aerodynamic competitions.</p>
-            <div class="log-meta-grid">
-              <div class="log-meta-box">
-                <h4>Topics Learned</h4>
-                <p>Fundamental electrical &amp; electronic components, circuits, and applications; Fusion 360 3D CAD modeling tools, feature options, and part design; Physical prototyping techniques using toy clay and paper rocket aerodynamics; Assignment presentation and design evaluation.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Key Takeaways</h4>
-                <p>Understood how electrical circuit fundamentals connect with mechanical enclosure designs; Practical physical modeling with clay toolkits helps visualize geometry before digital CAD creation; Tested phone-assisted vs unassisted research during the paper rocket competition; Successfully presented Fusion 360 assignment models for evaluation.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Reflection</h4>
-                <p>Combining electrical basics with Fusion 360 3D modeling broadened my engineering perspective beyond pure software. Building physical clay models and paper rockets before jumping into CAD gave me a tangible intuition for geometric constraints, aerodynamic testing, and rapid iteration.</p>
-              </div>
-            </div>
+        <div class="protosem-card">
+          <div class="log-week-tag">WEEK 3 | AUGUST 2026</div>
+          <h3>Electrical Systems &amp; Fusion 360 CAD</h3>
+          <p class="log-intro">Explored electronic circuits, 3D CAD modeling in Fusion 360, physical clay prototyping, and paper rocket aerodynamics.</p>
+          <div class="log-detail-box">
+            <strong>Topics:</strong> Electronic circuits, 3D CAD part design, clay modeling intuition, rocket aerodynamics testing.<br>
+            <strong>Takeaway:</strong> Physical modeling builds immediate geometric intuition before digital CAD rendering.
           </div>
         </div>
 
         <!-- Week 4 -->
-        <div class="timeline-connected-node reveal-up">
-          <div class="timeline-item-card">
-            <div class="timeline-date">WEEK 4 | AUGUST 2026</div>
-            <h3>Advanced CAD Assemblies, Digital Fabrication &amp; 3D Printing</h3>
-            <p class="desc">Gained hands-on experience in CAD assembly joints, image vectorization for laser cutting, assembly animation in Fusion 360, slicer setup for 3D printing with Bambu Studio, and selection as a Designer for the Alpha Team.</p>
-            <div class="log-meta-grid">
-              <div class="log-meta-box">
-                <h4>Topics Learned</h4>
-                <p>Fusion 360 component assembly, mechanical Joints (bottle cap movement), and assembly animation; Image conversion to DXF vector format and RDWorks software preparation for laser cutting; 3D printing workflow using Bambu Studio for model slicing and printer prep; Alpha Team selection as a Designer and debate on influencer impacts.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Key Takeaways</h4>
-                <p>Recreated a water bottle assembly and applied joints to simulate functional bottle cap movement; Mastered digital fabrication from image vectorization -&gt; DXF -&gt; RDWorks laser cutting setup; Configured 3D printing slicer parameters in Bambu Studio to prepare digital CAD models for manufacturing; Selected for the Alpha Team in the Designer role to lead team CAD and prototyping activities.</p>
-              </div>
-              <div class="log-meta-box">
-                <h4>Reflection</h4>
-                <p>Week 4 was a pivotal milestone bridging digital design and physical manufacturing. Learning assembly joints, laser cutting preparation in RDWorks, and 3D print slicing in Bambu Studio gave me complete end-to-end digital fabrication skills. Stepping into the Designer role for the Alpha Team allows me to apply these technical skills directly to real-world team projects.</p>
-              </div>
+        <div class="protosem-card">
+          <div class="log-week-tag">WEEK 4 | AUGUST 2026</div>
+          <h3>Advanced CAD Assemblies &amp; 3D Printing</h3>
+          <p class="log-intro">Mastered CAD bottle assembly joints, image vectorization for RDWorks laser cutting, Bambu Studio 3D slicing, and Alpha Team selection.</p>
+          <div class="log-detail-box">
+            <strong>Topics:</strong> Assembly animation, DXF image vectorization, Bambu Studio slicing, Alpha Team Designer lead.<br>
+            <strong>Takeaway:</strong> Complete digital fabrication workflow from CAD -&gt; Slicing -&gt; Manufacturing.
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONTACT SECTION ("CONNECTION") -->
+  <section class="section-block" id="contact">
+    <div class="container">
+      <div class="section-label">07 — GET IN TOUCH</div>
+      <h2 class="section-heading">C<span class="flourish">O</span>NNECTION</h2>
+      
+      <div class="contact-dual-layout">
+        <!-- Left: Contact Form -->
+        <div class="contact-form-card">
+          <h3 class="form-title">C<span class="flourish">O</span>NTACT ME</h3>
+          <form id="contactForm" novalidate>
+            <div class="form-field">
+              <label for="nameInput">YOUR NAME</label>
+              <input type="text" id="nameInput" name="name" placeholder="John Doe" required>
+            </div>
+            <div class="form-field">
+              <label for="emailInput">YOUR EMAIL</label>
+              <input type="email" id="emailInput" name="email" placeholder="john@example.com" required>
+            </div>
+            <div class="form-field">
+              <label for="subjectInput">CHOOSE SUBJECT</label>
+              <select id="subjectInput" name="subject">
+                <option value="collaboration">Project Collaboration</option>
+                <option value="internship">Internship / Job Inquiry</option>
+                <option value="data">Data Science / ML Consultation</option>
+                <option value="general">General Networking</option>
+              </select>
+            </div>
+            <div class="form-field">
+              <label for="messageInput">ABOUT YOUR PROJECT</label>
+              <textarea id="messageInput" name="message" placeholder="Tell me about your inquiry..." required></textarea>
+            </div>
+            <button type="submit" class="btn-primary-gradient btn-full">SEND MESSAGE →</button>
+            <div class="form-status" id="formStatus" style="display:none;"></div>
+          </form>
+        </div>
+
+        <!-- Right: Social Links & Eclipse Orb Graphic -->
+        <div class="contact-socials-card">
+          <div class="socials-directory">
+            <div class="directory-row">
+              <span class="dir-label">LINKEDIN</span>
+              <a href="https://www.linkedin.com/in/poornaa-shree-praveenraj-5780b032a" target="_blank" rel="noopener" class="dir-val">[POORNAA SHREE] ↗</a>
+            </div>
+            <div class="directory-row">
+              <span class="dir-label">GITHUB</span>
+              <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="dir-val">[POORNAASHREEPRAVEENRAJ] ↗</a>
+            </div>
+            <div class="directory-row">
+              <span class="dir-label">EMAIL</span>
+              <a href="mailto:poornaashreepraveenraj@gmail.com" class="dir-val">[POORNAASHREEPRAVEENRAJ@GMAIL.COM] ↗</a>
+            </div>
+            <div class="directory-row">
+              <span class="dir-label">LOCATION</span>
+              <span class="dir-val">[COIMBATORE, TAMIL NADU, INDIA]</span>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  </section>
 
-  <!-- PROJECTS SECTION -->
-  <section class="section" id="projects">
-    <div class="container">
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <div class="kicker-mono">05 — PROJECTS</div>
-          <h2>Selected Work</h2>
-        </div>
-      </div>
-
-      <div class="projects-grid">
-        <div class="project-card reveal-up">
-          <h3>DriftTune: Detecting Behavioral Drift</h3>
-          <p>Detects behavioral drift in long-term music preferences using Last.fm listening history and Spotify audio features. Classifies users into High, Medium, or Low drift categories based on temporal shifts in their listening behavior.</p>
-          <div class="tags">
-            <span>Python</span>
-            <span>Machine Learning</span>
-            <span>Data Analytics</span>
-          </div>
-          <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener">GitHub Repository →</a>
-        </div>
-
-        <div class="project-card reveal-up">
-          <h3>RoadSOS: Emergency Response System</h3>
-          <p>An offline-capable platform built for the IIT Madras Road Safety Hackathon. It optimizes emergency response by instantly locating and ranking nearby trauma centers, ambulances, and critical services based on distance and medical capability scores.</p>
-          <div class="tags">
-            <span>Data Analytics</span>
-            <span>Hackathon Project</span>
-            <span>Algorithms</span>
-          </div>
-          <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener">GitHub Repository →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT SECTION -->
-  <section class="section" id="contact" style="border-bottom:none;">
-    <div class="container">
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <div class="kicker-mono">06 — CONTACT</div>
-          <h2>Let's talk.</h2>
-          <p class="sub">Feel free to reach out for inquiries, project collaborations, or networking.</p>
-        </div>
-      </div>
-
-      <div class="about-grid">
-        <form class="contact-form reveal-up" id="contactForm" novalidate>
-          <div>
-            <label for="nameInput">Name</label>
-            <input type="text" id="nameInput" name="name" autocomplete="name" required>
-          </div>
-          <div>
-            <label for="emailInput">Email</label>
-            <input type="email" id="emailInput" name="email" autocomplete="email" required>
-          </div>
-          <div>
-            <label for="messageInput">Message</label>
-            <textarea id="messageInput" name="message" required></textarea>
-          </div>
-          <button type="submit" class="btn-cta" style="width:100%; justify-content:center; padding:14px;">Send Message</button>
-          <div class="form-status" id="formStatus" role="status" style="display:none; padding:14px; border-radius:14px; background:var(--color-bg-soft); color:var(--color-kicker); border:1px solid var(--color-border); margin-top:14px;"></div>
-        </form>
-
-        <div class="bento-card reveal-up" style="display:flex; flex-direction:column; gap:20px;">
-          <div>
-            <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-kicker); text-transform:uppercase;">LinkedIn</div>
-            <a href="https://www.linkedin.com/in/poornaa-shree-praveenraj-5780b032a" target="_blank" rel="noopener" style="font-size:16px; font-weight:600; color:var(--color-text);">poornaa-shree-praveenraj →</a>
-          </div>
-          <div style="border-top:0.5px solid var(--color-border); padding-top:20px;">
-            <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-kicker); text-transform:uppercase;">GitHub</div>
-            <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" style="font-size:16px; font-weight:600; color:var(--color-text);">poornaashreepraveenraj →</a>
-          </div>
-          <div style="border-top:0.5px solid var(--color-border); padding-top:20px;">
-            <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-kicker); text-transform:uppercase;">Email</div>
-            <a href="mailto:poornaashreepraveenraj@gmail.com" style="font-size:16px; font-weight:600; color:var(--color-text);">poornaashreepraveenraj@gmail.com →</a>
-          </div>
-          <div style="border-top:0.5px solid var(--color-border); padding-top:20px;">
-            <div style="font-family:var(--font-mono); font-size:11px; color:var(--color-kicker); text-transform:uppercase;">Location</div>
-            <div style="font-size:16px; font-weight:600; color:var(--color-text);">Coimbatore, Tamil Nadu, India</div>
+          <!-- Glowing Neon Planet Eclipse Orb Visual -->
+          <div class="neon-planet-orb-container">
+            <div class="neon-planet-orb"></div>
           </div>
         </div>
       </div>
@@ -435,18 +548,28 @@
   </section>
 </main>
 
-<footer>
-  <div class="container">
-    <p>© 2026 Poornaa Shree Praveenraj.</p>
+<!-- BOTTOM MARQUEE FOOTER RIBBON -->
+<div class="marquee-ribbon marquee-footer">
+  <div class="marquee-track">
+    <span>LET'S MAKE DATA DRIVE IMPACTFUL DECISIONS</span> <span class="bullet">•</span>
+    <span>DESIGNED FOR POORNAA SHREE PRAVEENRAJ © 2026</span> <span class="bullet">•</span>
+    <span>LET'S MAKE DATA DRIVE IMPACTFUL DECISIONS</span> <span class="bullet">•</span>
+    <span>DESIGNED FOR POORNAA SHREE PRAVEENRAJ © 2026</span> <span class="bullet">•</span>
+  </div>
+</div>
+
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Poornaa Shree Praveenraj. All rights reserved.</p>
     <div class="foot-links">
       <a href="https://www.linkedin.com/in/poornaa-shree-praveenraj-5780b032a" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener">GitHub</a>
-      <a href="#home">Back to top</a>
+      <a href="#home">Back to top ↑</a>
     </div>
   </div>
 </footer>
 
-<div id="toast" role="status" aria-live="polite" style="position:fixed; bottom:28px; left:50%; transform:translateX(-50%) translateY(20px); background:var(--color-text); color:var(--color-bg); padding:12px 24px; border-radius:100px; font-size:14px; opacity:0; pointer-events:none; transition:var(--transition-normal); z-index:300;"></div>
+<div id="toast" role="status" aria-live="polite"></div>
 
 </body>
 </html>

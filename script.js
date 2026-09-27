@@ -1,118 +1,47 @@
 /**
- * FIGMA SITE THEME & APPLE SCROLL PHYSICS - Master JavaScript
+ * LIQUID GLASS & DARK FUTURISTIC EDITORIAL BRAND - Master JavaScript
  */
 
 document.addEventListener('DOMContentLoaded', function () {
-  const body = document.body;
-  const themeToggleBtn = document.getElementById('themeToggle');
+  // ---------- Navigation Menu Toggle ----------
+  const menuToggle = document.getElementById('menuToggle');
+  const navDropdown = document.getElementById('navDropdown');
 
-  // ---------- Theme Switcher ----------
-  if (themeToggleBtn) {
-    themeToggleBtn.addEventListener('click', function () {
-      const isDark = body.getAttribute('data-theme') === 'dark';
-      body.setAttribute('data-theme', isDark ? 'light' : 'dark');
-      localStorage.setItem('theme-preference', isDark ? 'light' : 'dark');
+  if (menuToggle && navDropdown) {
+    menuToggle.addEventListener('click', function (e) {
+      e.stopPropagation();
+      navDropdown.classList.toggle('active');
     });
-  }
 
-  const savedTheme = localStorage.getItem('theme-preference');
-  if (savedTheme) {
-    body.setAttribute('data-theme', savedTheme);
-  }
-
-  // ---------- Mobile Menu Toggle ----------
-  const hamburger = document.getElementById('hamburger');
-  const navLinks = document.querySelector('.nav-links');
-  if (hamburger && navLinks) {
-    hamburger.addEventListener('click', function () {
-      const isExpanded = navLinks.style.display === 'flex';
-      navLinks.style.display = isExpanded ? 'none' : 'flex';
-      if (!isExpanded) {
-        navLinks.style.flexDirection = 'column';
-        navLinks.style.position = 'absolute';
-        navLinks.style.top = '100%';
-        navLinks.style.left = '16px';
-        navLinks.style.right = '16px';
-        navLinks.style.background = 'var(--color-bg-soft)';
-        navLinks.style.padding = '20px';
-        navLinks.style.borderRadius = '20px';
-        navLinks.style.border = '1px solid var(--color-border)';
-        navLinks.style.boxShadow = '0 10px 30px rgba(0,0,0,0.1)';
+    // Close menu when clicking outside
+    document.addEventListener('click', function (e) {
+      if (!navDropdown.contains(e.target) && !menuToggle.contains(e.target)) {
+        navDropdown.classList.remove('active');
       }
     });
-  }
 
-  // ---------- Scrollytelling Reveal Animations ----------
-  const revealElements = document.querySelectorAll('.reveal-up');
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver(function (entries, obs) {
-      entries.forEach(function (entry) {
-        if (entry.isIntersecting) {
-          entry.target.classList.add('in');
-          obs.unobserve(entry.target);
-        }
+    // Close menu when clicking a dropdown link
+    const dropdownLinks = navDropdown.querySelectorAll('a');
+    dropdownLinks.forEach(function (link) {
+      link.addEventListener('click', function () {
+        navDropdown.classList.remove('active');
       });
-    }, { threshold: 0.12 });
-
-    revealElements.forEach(function (el) {
-      observer.observe(el);
-    });
-  } else {
-    revealElements.forEach(function (el) {
-      el.classList.add('in');
     });
   }
 
-  // ---------- Scroll-Spy Active Link Highlight ----------
-  const sections = document.querySelectorAll('section[id]');
-  const navAnchors = document.querySelectorAll('.nav-links a');
-
-  if (sections.length > 0 && navAnchors.length > 0) {
-    window.addEventListener('scroll', function () {
-      let currentSectionId = '';
-      sections.forEach(function (section) {
-        const sectionTop = section.offsetTop - 120;
-        const sectionHeight = section.offsetHeight;
-        if (window.scrollY >= sectionTop && window.scrollY < sectionTop + sectionHeight) {
-          currentSectionId = section.getAttribute('id');
-        }
-      });
-
-      if (currentSectionId) {
-        navAnchors.forEach(function (anchor) {
-          const href = anchor.getAttribute('href');
-          if (href === '#' + currentSectionId || href === currentSectionId + '.html') {
-            anchor.classList.add('active');
-          } else {
-            anchor.classList.remove('active');
-          }
-        });
-      }
-    }, { passive: true });
-  }
-
-  // ---------- Toast Notification ----------
+  // ---------- Toast Notification Handler ----------
   const toast = document.getElementById('toast');
   let toastTimer;
-  function showToast(msg) {
+
+  window.showToast = function (msg) {
     if (!toast) return;
     toast.textContent = msg;
-    toast.style.opacity = '1';
-    toast.style.transform = 'translateX(-50%) translateY(0)';
+    toast.classList.add('show');
     clearTimeout(toastTimer);
     toastTimer = setTimeout(function () {
-      toast.style.opacity = '0';
-      toast.style.transform = 'translateX(-50%) translateY(20px)';
+      toast.classList.remove('show');
     }, 3200);
-  }
-
-  const resumeBtn = document.getElementById('resumeBtn');
-  if (resumeBtn) {
-    resumeBtn.addEventListener('click', function (e) {
-      e.preventDefault();
-      showToast('Resume PDF placeholder — attach your PDF file to this button link.');
-    });
-  }
+  };
 
   // ---------- Contact Form Handler ----------
   const contactForm = document.getElementById('contactForm');
@@ -128,16 +57,39 @@ document.addEventListener('DOMContentLoaded', function () {
       if (!name || !email || !message) {
         formStatus.style.display = 'block';
         formStatus.textContent = 'Please complete all required fields before submitting.';
-        formStatus.style.background = 'rgba(255, 69, 58, 0.15)';
-        formStatus.style.color = '#FF453A';
+        formStatus.style.borderColor = '#E11D48';
+        formStatus.style.color = '#E11D48';
         return;
       }
 
       formStatus.style.display = 'block';
-      formStatus.style.background = 'var(--color-bg-soft)';
-      formStatus.style.color = 'var(--color-kicker)';
-      formStatus.textContent = 'Thank you, ' + name + '! Your message is ready to send.';
+      formStatus.style.borderColor = 'rgba(249, 115, 22, 0.4)';
+      formStatus.style.color = '#F97316';
+      formStatus.textContent = 'Thank you, ' + name + '! Your message has been sent successfully.';
+      showToast('Message sent! Poornaa will respond shortly.');
       contactForm.reset();
     });
   }
 });
+
+/**
+ * Accordion Toggle Function for "WHAT MAKES ME DIFFERENT?"
+ */
+function toggleDiff(element) {
+  const item = element.parentElement;
+  const isExpanded = item.classList.contains('active');
+  
+  // Optional: Collapse other accordion items
+  const allItems = document.querySelectorAll('.diff-item');
+  allItems.forEach(function (el) {
+    el.classList.remove('active');
+    const icon = el.querySelector('.diff-icon');
+    if (icon) icon.textContent = '+';
+  });
+
+  if (!isExpanded) {
+    item.classList.add('active');
+    const icon = item.querySelector('.diff-icon');
+    if (icon) icon.textContent = '−';
+  }
+}

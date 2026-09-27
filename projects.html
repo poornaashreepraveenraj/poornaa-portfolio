@@ -3,97 +3,82 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Projects Bento — Poornaa Shree Praveenraj</title>
-<meta name="description" content="Bento box project showcase for Poornaa Shree Praveenraj.">
+<title>Projects — Poornaa Shree Praveenraj</title>
 
-<!-- Google Fonts: Inter + JetBrains Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
 <script src="script.js" defer></script>
 </head>
-<body data-theme="dark">
+<body>
 
-<a href="#main" class="skip-link">Skip to content</a>
-
-<!-- FLOATING LIQUID GLASS NAVBAR -->
-<header class="site-nav" id="siteNav">
-  <div class="nav-floating-pill">
-    <a href="index.html" class="logo">Poornaa Shree<span>.</span></a>
-    <ul class="nav-links">
-      <li><a href="index.html">Home</a></li>
-      <li><a href="about.html">About</a></li>
-      <li><a href="skills.html">Skills</a></li>
-      <li><a href="experience.html">Experience &amp; Edu</a></li>
-      <li><a href="protosem.html">ProtoSem</a></li>
-      <li><a href="projects.html" class="active">Projects</a></li>
-      <li><a href="contact.html">Contact</a></li>
-    </ul>
-    <div class="nav-right">
-      <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
-        <svg id="themeIcon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="5.64" x2="19.78" y2="4.22"></line></svg>
-      </button>
-      <button class="hamburger" id="hamburger" aria-label="Toggle Navigation">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
+<header class="site-header">
+  <div class="pill-nav-container">
+    <a href="index.html" class="pill-nav-btn pill-brand"><span>POORNAA SHREE</span></a>
+    <button class="pill-nav-btn pill-menu" id="menuToggle" aria-label="Toggle Navigation menu"><span class="menu-icon">≡</span> <span>MENU</span></button>
   </div>
+  <nav class="nav-dropdown" id="navDropdown">
+    <a href="index.html#home">00 — HOME</a>
+    <a href="index.html#about">01 — ABOUT ME</a>
+    <a href="index.html#skills">02 — WHAT I DO (SKILLS)</a>
+    <a href="index.html#different">03 — WHY ME?</a>
+    <a href="index.html#projects">04 — PORTFOLIO</a>
+    <a href="index.html#experience">05 — EXPERIENCE &amp; EDU</a>
+    <a href="index.html#protosem">06 — PROTOSEM LOGS</a>
+    <a href="index.html#contact">07 — CONNECTION</a>
+  </nav>
 </header>
 
-<main id="main" style="padding-top: 140px;">
-  <section class="section" style="border-top:none;">
+<main style="padding-top: 140px;">
+  <section class="section-block" style="border-top:none;">
     <div class="container">
-      <!-- STICKY HEADER -->
-      <div class="sticky-header-wrap">
-        <div class="sticky-header">
-          <span class="kicker-mono">05 — SELECTED WORK</span>
-          <h2>Projects Bento Box</h2>
-          <p class="sub">Applied machine learning and data analytics projects</p>
-        </div>
-      </div>
-
-      <!-- BENTO BOX PROJECTS GRID -->
-      <div class="bento-grid">
-        <div class="bento-card col-span-6 reveal-up">
-          <div>
-            <span class="kicker-mono">MACHINE LEARNING</span>
-            <h3>DriftTune: Detecting Behavioral Drift</h3>
-            <p>Detects behavioral drift in long-term music preferences using Last.fm listening history and Spotify audio features. Classifies users into High, Medium, or Low drift categories based on temporal shifts in their listening behavior.</p>
-            <div class="tags">
-              <span>Python</span>
-              <span>Machine Learning</span>
-              <span>Data Analytics</span>
+      <div class="section-label">04 — FEATURED WORKS &amp; CASE STUDIES</div>
+      <h2 class="section-heading">P<span class="flourish">O</span>RTFOLIO</h2>
+      
+      <div class="projects-list-accordion">
+        <div class="project-list-row">
+          <div class="project-row-left">
+            <span class="project-num">01</span>
+            <div class="project-main-info">
+              <h3 class="project-name">DriftTune: Behavioral Drift Detection</h3>
+              <p class="project-subtext">Detects long-term music preference shifts using Last.fm listening history &amp; Spotify audio features.</p>
             </div>
           </div>
-          <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="btn-cta" style="align-self:flex-start; margin-top:28px;">GitHub Repository →</a>
+          <div class="project-row-right">
+            <span class="project-cat">MACHINE LEARNING / DATA ANALYTICS</span>
+            <span class="project-year">2026</span>
+            <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="project-link-btn">VIEW GITHUB →</a>
+          </div>
         </div>
 
-        <div class="bento-card col-span-6 reveal-up">
-          <div>
-            <span class="kicker-mono">DATA ANALYTICAL SYSTEM</span>
-            <h3>RoadSOS: Emergency Response System</h3>
-            <p>An offline-capable platform built for the IIT Madras Road Safety Hackathon. It optimizes emergency response by instantly locating and ranking nearby trauma centers, ambulances, and critical services based on distance and medical capability scores.</p>
-            <div class="tags">
-              <span>Data Analytics</span>
-              <span>Hackathon Project</span>
-              <span>Algorithms</span>
+        <div class="project-list-row">
+          <div class="project-row-left">
+            <span class="project-num">02</span>
+            <div class="project-main-info">
+              <h3 class="project-name">RoadSOS: Emergency Response System</h3>
+              <p class="project-subtext">Offline-capable platform optimizing trauma center ranking &amp; ambulance dispatch for IIT Madras Hackathon.</p>
             </div>
           </div>
-          <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="btn-cta" style="align-self:flex-start; margin-top:28px;">GitHub Repository →</a>
+          <div class="project-row-right">
+            <span class="project-cat">DATA ANALYTICS / ALGORITHMS</span>
+            <span class="project-year">2026</span>
+            <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="project-link-btn">VIEW GITHUB →</a>
+          </div>
         </div>
       </div>
     </div>
   </section>
 </main>
 
-<footer>
-  <div class="container">
-    <p>© 2026 Poornaa Shree Praveenraj.</p>
+<footer class="site-footer">
+  <div class="container footer-content">
+    <p>© 2026 Poornaa Shree Praveenraj. All rights reserved.</p>
     <div class="foot-links">
       <a href="https://www.linkedin.com/in/poornaa-shree-praveenraj-5780b032a" target="_blank" rel="noopener">LinkedIn</a>
       <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener">GitHub</a>
+      <a href="index.html#home">Back to Home ↑</a>
     </div>
   </div>
 </footer>
