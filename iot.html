@@ -90,10 +90,7 @@
           <img src="assets/iot/image2.png" alt="ESP32 Web Server Browser Interface &amp; Serial Monitor Output">
           <div class="evidence-caption">Web page buttons and Serial Monitor showing IP address and GET handling.</div>
         </div>
-        <div class="evidence-card">
-          <video src="assets/iot/task_demo_1.mp4" muted playsinline autoplay loop></video>
-          <div class="evidence-caption">Muted demo of the LED toggling via browser clicks.</div>
-        </div>
+
       </div>
       <div class="download-btn-group">
         <a href="downloads/task1_esp32_webserver.ino" download class="btn-primary-gradient">DOWNLOAD TASK 1 SOURCE CODE (.INO)</a>
@@ -166,8 +163,8 @@
           <div class="evidence-caption">IFTTT applet linking Google Assistant to Adafruit IO.</div>
         </div>
         <div class="evidence-card">
-          <video src="assets/iot/task_demo_2.mp4" muted playsinline autoplay loop></video>
-          <div class="evidence-caption">Bulb toggling via voice‑triggered IFTTT automation.</div>
+          <video src="assets/iot/task_demo_1.mp4" muted playsinline autoplay loop></video>
+          <div class="evidence-caption">Muted demo of the LED toggling via browser clicks.</div>
         </div>
       </div>
       <div class="download-btn-group">
@@ -554,151 +551,7 @@
     </div>
   </div>
 </section>
-    <!-- Original Task 1 block removed -->
-      <span class="task-header-badge">TASK 01 — LOCAL EMBEDDED CONTROL</span>
-      <h2 class="task-title">ESP32 Web Server &amp; HTML LED Control</h2>
-      <p class="task-subtitle">Hosting an embedded HTTP web server on port 80 to control physical hardware via browser GET requests.</p>
 
-      <!-- Overview -->
-      <div class="doc-block">
-        <h3>1. Overview</h3>
-        <p>
-          The objective of Task 1 was to understand how a microcontroller can provide a web interface and use an HTTP request to control physical hardware. I used an ESP32 development board, connected it to a local Wi-Fi network, created a basic HTTP server on the board, and controlled the built-in LED connected to GPIO 2 from a web browser. No external LED or breadboard was required because the development board already contains the indicator LED on GPIO 2.
-        </p>
-      </div>
-
-      <!-- Concepts -->
-      <div class="doc-block">
-        <h3>2. Concepts</h3>
-        <p>
-          GPIO 2 is configured as a digital output pin. A HIGH (+3.3V) or LOW (0V) digital state is used to control the onboard LED. The core client-server architecture operates as follows:
-        </p>
-        <ul>
-          <li><strong>Client (Browser):</strong> Sends HTTP GET requests when buttons are pressed.</li>
-          <li><strong>Server (ESP32 WebServer):</strong> Listens on port 80 and maps URL routes (`/on`, `/off`) to physical GPIO state changes.</li>
-          <li><strong>Local Wi-Fi Network:</strong> Acts as the communication medium carrying network packets between client and server.</li>
-        </ul>
-      </div>
-
-      <!-- System Design -->
-      <div class="doc-block">
-        <h3>3. System Design</h3>
-        <p>The sequence below illustrates how a browser button press travels through the local Wi-Fi network to change the physical LED state on GPIO 2:</p>
-        <div class="diagram-pre">
-Browser Client
-   │
-   │ HTTP GET request (/on or /off)
-   ▼
-Local Wi-Fi Network
-   │
-   ▼
-ESP32 Web Server (Port 80)
-   │
-   ├── GET /on  ──► GPIO 2 HIGH ──► Built-in LED ON
-   └── GET /off ──► GPIO 2 LOW  ──► Built-in LED OFF
-        </div>
-      </div>
-
-      <!-- Hardware & Software -->
-      <div class="doc-block">
-        <h3>4. Hardware &amp; Software Specifications</h3>
-        <table class="doc-table">
-          <thead>
-            <tr><th>Item</th><th>Role &amp; Specification</th></tr>
-          </thead>
-          <tbody>
-            <tr><td>ESP32 Development Board</td><td>Microcontroller, Wi-Fi interface, and embedded HTTP web server</td></tr>
-            <tr><td>Built-in LED</td><td>Physical digital output indicator connected internally to GPIO 2</td></tr>
-            <tr><td>USB Cable</td><td>5V power supply, flashing firmware, and Serial Monitor debugging</td></tr>
-            <tr><td>Wi-Fi Router / Hotspot</td><td>Local network medium for client-server communication</td></tr>
-            <tr><td>Browser Client</td><td>User interface running on desktop or smartphone</td></tr>
-            <tr><td>Arduino IDE</td><td>Firmware C++ development environment</td></tr>
-            <tr><td>WiFi.h &amp; WebServer.h</td><td>ESP32 Wi-Fi connection and HTTP route handling libraries</td></tr>
-          </tbody>
-        </table>
-      </div>
-
-      <!-- Wiring / Setup -->
-      <div class="doc-block">
-        <h3>5. Wiring / Setup</h3>
-        <p>
-          No external breadboard circuit was required for Task 1. The onboard blue LED is pre-wired to GPIO 2.
-        </p>
-        <div class="diagram-pre">
-ESP32 GPIO 2 ───► Onboard LED (Anode) ───► Resistor ───► GND
-
-GPIO 2 HIGH ──► LED ON
-GPIO 2 LOW  ──► LED OFF
-        </div>
-      </div>
-
-      <!-- Implementation -->
-      <div class="doc-block">
-        <h3>6. Implementation</h3>
-        <p>The firmware implementation follows four core stages:</p>
-        <ol>
-          <li><strong>Wi-Fi Initialization:</strong> Using <code>WiFi.begin(ssid, password)</code> to join the local access point and acquire an IP address.</li>
-          <li><strong>HTTP Server Initialization:</strong> Creating <code>WebServer server(80)</code> on standard port 80.</li>
-          <li><strong>Route Handling:</strong> Mapping routes <code>server.on("/on", handleOn)</code> and <code>server.on("/off", handleOff)</code> to C++ handlers that invoke <code>digitalWrite(2, HIGH)</code> and <code>digitalWrite(2, LOW)</code>.</li>
-          <li><strong>Client Processing Loop:</strong> Continuously invoking <code>server.handleClient()</code> inside <code>loop()</code>.</li>
-        </ol>
-      </div>
-
-      <!-- Configuration -->
-      <div class="doc-block">
-        <h3>7. Configuration Procedure</h3>
-        <ol>
-          <li>Configure Wi-Fi credentials in the ESP32 source code.</li>
-          <li>Upload firmware using Arduino IDE and open the Serial Monitor at 115200 baud.</li>
-          <li>Note the local IP address printed by the ESP32 (e.g., <code>192.168.1.50</code>).</li>
-          <li>Open the IP address in any web browser connected to the same Wi-Fi network to access the control page.</li>
-        </ol>
-      </div>
-
-      <!-- Evidence -->
-      <div class="doc-block">
-        <h3>8. Evidence &amp; Visual Verification</h3>
-        <div class="evidence-gallery">
-          <div class="evidence-card">
-            <img src="assets/iot/image2.png" alt="ESP32 Web Server Browser Interface &amp; Serial Monitor Output">
-            <div class="evidence-caption">Figure 1.1: Web browser control buttons and Serial Monitor log displaying assigned local IP address and GET request handling.</div>
-          </div>
-          <div class="evidence-card">
-            <video src="assets/iot/task_demo_1.mp4" muted playsinline autoplay loop></video>
-            <div class="evidence-caption">Video 1.1: Muted physical demonstration of ESP32 GPIO 2 LED turning ON and OFF in response to browser HTTP requests.</div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Challenges & Fixes -->
-      <div class="doc-block">
-        <h3>9. Challenges &amp; Fixes</h3>
-        <p>
-          <strong>Limitation:</strong> The main architectural constraint was that the ESP32 operated as a purely local web server. The browser client required direct local network IP reachability. If the browser device switched to cellular data or another router, it could not access port 80.
-        </p>
-        <p>
-          <strong>Resolution:</strong> This local reachability limitation provided the primary motivation for transitioning from local HTTP servers to cloud MQTT message brokers in Task 2.
-        </p>
-      </div>
-
-      <!-- Reflection -->
-      <div class="doc-block">
-        <h3>10. Reflection</h3>
-        <p>
-          Task 1 gave me a practical understanding of client-server communication on an embedded device. I learned that an HTML button does not directly control a GPIO; it creates a network request, the ESP32 interprets the request, and the resulting software action changes the electrical state of the pin. I also learned how Wi-Fi connectivity, IP addressing, HTTP routes, and GPIO control fit together as one system.
-        </p>
-      </div>
-
-      <!-- Source Code Download -->
-      <div class="doc-block">
-        <h3>11. Source Code Download</h3>
-        <p>Download the sanitized Arduino/C++ source code for Task 1 (placeholders used for credentials):</p>
-        <div class="download-btn-group">
-          <a href="downloads/task1_esp32_webserver.ino" download class="btn-primary-gradient">DOWNLOAD TASK 1 SOURCE CODE (.INO)</a>
-        </div>
-      </div>
-    </div>
-  </section>
 
 
   <!-- ==========================================================================
