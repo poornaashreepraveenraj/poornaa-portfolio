@@ -274,9 +274,9 @@ void loop() {
       <div class="doc-block">
         <h3>8. Photos, Screenshots &amp; Demo Video</h3>
         <div class="evidence-gallery">
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Photo coming soon</span><strong>Physical setup</strong><span>ESP32 connected to the laptop, with the onboard LED visible.</span></figure>
+          <figure class="evidence-card"><video src="assets/iot/task1_demo.mp4" poster="assets/iot/web/task1_demo_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 1.1 — Clicking the buttons on the ESP32&#x27;s web page switches the onboard LED on GPIO 2."></video><figcaption>Video 1.1 — Clicking the buttons on the ESP32's web page switches the onboard LED on GPIO 2.</figcaption></figure>
+          <figure class="evidence-card"><a href="assets/iot/web/task1_setup.webp" target="_blank" rel="noopener" aria-label="Open full-size image: ESP32 board connected to the laptop by USB with its LED lit, next to the LED control web page"><img src="assets/iot/web/task1_setup.webp" alt="ESP32 board connected to the laptop by USB with its LED lit, next to the LED control web page" width="1024" height="576" loading="lazy" decoding="async"></a><figcaption>Fig 1.2 — Physical setup: ESP32 on USB beside the control page (still from Video 1.1).</figcaption></figure>
           <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Screenshot coming soon</span><strong>Serial Monitor</strong><span>Wi-Fi connection and the ESP32's local IP address.</span></figure>
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Video coming soon</span><strong>LED ON/OFF from the web page</strong><span>Clicking the buttons in the browser while the onboard LED switches.</span></figure>
         </div>
       </div>
 
@@ -490,8 +490,8 @@ void loop() {
       <div class="doc-block">
         <h3>8. Hardware Photos &amp; Working Demonstration</h3>
         <div class="evidence-gallery">
-          <figure class="evidence-card"><video src="assets/iot/task_demo_1.mp4" poster="assets/iot/web/task_demo_1_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 2.1 — Clicking the Adafruit IO dashboard toggle on the laptop switches the bulb through the relay."></video><figcaption>Video 2.1 — Clicking the Adafruit IO dashboard toggle on the laptop switches the bulb through the relay.</figcaption></figure>
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Photo coming soon</span><strong>Hardware setup</strong><span>ESP32 wired to the relay module and bulb.</span></figure>
+          <figure class="evidence-card"><video src="assets/iot/task2_demo.mp4" poster="assets/iot/web/task2_demo_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 2.1 — Clicking the Adafruit IO dashboard toggle on the laptop switches the bulb through the relay."></video><figcaption>Video 2.1 — Clicking the Adafruit IO dashboard toggle on the laptop switches the bulb through the relay.</figcaption></figure>
+          <figure class="evidence-card"><a href="assets/iot/web/task2_setup.webp" target="_blank" rel="noopener" aria-label="Open full-size image: ESP32 wired to a blue relay module switching a lit bulb, with the Adafruit IO dashboard on the laptop"><img src="assets/iot/web/task2_setup.webp" alt="ESP32 wired to a blue relay module switching a lit bulb, with the Adafruit IO dashboard on the laptop" width="1024" height="576" loading="lazy" decoding="async"></a><figcaption>Fig 2.3 — Hardware setup: ESP32, relay module and bulb (still from Video 2.1).</figcaption></figure>
           <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Screenshot coming soon</span><strong>Serial Monitor</strong><span>"MQTT Connected!" and the received "Got: 1 / 0" messages.</span></figure>
         </div>
       </div>
@@ -607,8 +607,8 @@ ESP32 receives "ON"  ──► GPIO 23 HIGH ──► relay ──► bulb ON</p
       <div class="doc-block">
         <h3>9. Working Prototype &amp; Demonstration</h3>
         <div class="evidence-gallery">
-          <figure class="evidence-card"><video src="assets/iot/task_demo_2.mp4" poster="assets/iot/web/task_demo_2_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 3.1 — Voice command given on the phone; the bulb switches through IFTTT → Adafruit IO → ESP32."></video><figcaption>Video 3.1 — Voice command given on the phone; the bulb switches through IFTTT → Adafruit IO → ESP32.</figcaption></figure>
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Photo coming soon</span><strong>Working prototype</strong><span>ESP32, relay and bulb during the voice test.</span></figure>
+          <figure class="evidence-card"><video src="assets/iot/task3_demo.mp4" poster="assets/iot/web/task3_demo_poster.jpg" width="960" height="540" controls playsinline preload="none" aria-label="Video 3.1 (with sound) — Voice command given on the phone; the bulb switches through IFTTT → Adafruit IO → ESP32."></video><figcaption>Video 3.1 (with sound) — Voice command given on the phone; the bulb switches through IFTTT → Adafruit IO → ESP32.</figcaption></figure>
+          <figure class="evidence-card"><a href="assets/iot/web/task3_prototype.webp" target="_blank" rel="noopener" aria-label="Open full-size image: Phone giving a voice command while the bulb connected to the ESP32 and relay lights up"><img src="assets/iot/web/task3_prototype.webp" alt="Phone giving a voice command while the bulb connected to the ESP32 and relay lights up" width="1024" height="576" loading="lazy" decoding="async"></a><figcaption>Fig 3.3 — Working prototype during the voice test (still from Video 3.1).</figcaption></figure>
           <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Screenshot coming soon</span><strong>Adafruit IO feed log</strong><span>Relay feed history showing the ON/OFF values written by IFTTT.</span></figure>
         </div>
       </div>
@@ -752,7 +752,7 @@ Relay (GPIO 26) ◄┘      │                                            │
         <div class="evidence-gallery">
           <figure class="evidence-card"><a href="assets/iot/image12.png" target="_blank" rel="noopener" aria-label="Open full-size image: Environmental dashboard showing temperature 28.5, humidity 48.0, light level 2559 and bulb OFF"><img src="assets/iot/web/image12.webp" alt="Environmental dashboard showing temperature 28.5, humidity 48.0, light level 2559 and bulb OFF" width="1400" height="682" loading="lazy" decoding="async"></a><figcaption>Fig 4.6 — Dashboard showing live readings from the ESP32.</figcaption></figure>
           <figure class="evidence-card"><a href="assets/iot/image17.png" target="_blank" rel="noopener" aria-label="Open full-size image: Lighting control panel with operating mode, manual light control and automatic lighting threshold 2000"><img src="assets/iot/web/image17.webp" alt="Lighting control panel with operating mode, manual light control and automatic lighting threshold 2000" width="1400" height="609" loading="lazy" decoding="async"></a><figcaption>Fig 4.7 — Control panel: mode switch, manual ON/OFF and LDR threshold.</figcaption></figure>
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Video coming soon</span><strong>Web app workflow</strong><span>Landing page → login → dashboard with live values and bulb control.</span></figure>
+          <figure class="evidence-card"><video src="assets/iot/task4_workflow.mp4" poster="assets/iot/web/task4_workflow_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 4.1 — Web app workflow: landing page → login (&quot;Access&quot;) → live dashboard."></video><figcaption>Video 4.1 — Web app workflow: landing page → login ("Access") → live dashboard.</figcaption></figure>
         </div>
       </div>
 
@@ -979,8 +979,10 @@ void loop() {
       <div class="doc-block">
         <h3>9. Photos &amp; Demonstration Video</h3>
         <div class="evidence-gallery">
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Photo coming soon</span><strong>Complete prototype</strong><span>ESP32 with DHT11, LDR, relay and bulb.</span></figure>
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Video coming soon</span><strong>Complete system</strong><span>AUTO mode reacting to the LDR, the history table and graph, and the CSV download.</span></figure>
+          <figure class="evidence-card"><video src="assets/iot/task5_demo.mp4" poster="assets/iot/web/task5_demo_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 5.1 — Complete system: login, live dashboard, a phone torch on the LDR in automatic mode, the history table and the sensor graphs."></video><figcaption>Video 5.1 — Complete system: login, live dashboard, a phone torch on the LDR in automatic mode, the history table and the sensor graphs.</figcaption></figure>
+          <figure class="evidence-card"><a href="assets/iot/web/task5_photo1.webp" target="_blank" rel="noopener" aria-label="Open full-size image: Complete prototype: breadboard with ESP32, DHT11, LDR and relay, a lit bulb, and the dashboard on a laptop"><img src="assets/iot/web/task5_photo1.webp" alt="Complete prototype: breadboard with ESP32, DHT11, LDR and relay, a lit bulb, and the dashboard on a laptop" width="1600" height="900" loading="lazy" decoding="async"></a><figcaption>Fig 5.6 — Complete prototype with the live dashboard (bulb ON).</figcaption></figure>
+          <figure class="evidence-card"><a href="assets/iot/web/task5_photo2.webp" target="_blank" rel="noopener" aria-label="Open full-size image: Operating the smart lighting dashboard on the laptop beside the prototype"><img src="assets/iot/web/task5_photo2.webp" alt="Operating the smart lighting dashboard on the laptop beside the prototype" width="1600" height="900" loading="lazy" decoding="async"></a><figcaption>Fig 5.7 — Operating the dashboard next to the hardware.</figcaption></figure>
+          <figure class="evidence-card"><a href="assets/iot/web/task5_photo3.webp" target="_blank" rel="noopener" aria-label="Open full-size image: Dashboard showing temperature, humidity and light level graphs next to the lit bulb"><img src="assets/iot/web/task5_photo3.webp" alt="Dashboard showing temperature, humidity and light level graphs next to the lit bulb" width="1600" height="900" loading="lazy" decoding="async"></a><figcaption>Fig 5.8 — Temperature/humidity and light-level graphs while the system runs.</figcaption></figure>
         </div>
       </div>
 
