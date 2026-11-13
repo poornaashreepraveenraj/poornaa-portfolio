@@ -9,14 +9,14 @@
 <!-- Google Fonts: Syne, Space Grotesk, Plus Jakarta Sans, JetBrains Mono -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="styles.css">
 <script src="script.js" defer></script>
 </head>
 <body>
 
-<a href="#home" class="skip-link">Skip to content</a>
+<a href="#about" class="skip-link">Skip to content</a>
 
 <!-- FLOATING GLASSMORPHISM PILL NAVBAR -->
 <header class="site-header">
@@ -24,13 +24,11 @@
     <a href="#home" class="pill-nav-btn pill-brand">
       <span>POORNAA SHREE</span>
     </a>
-    <button class="pill-nav-btn pill-menu" id="menuToggle" aria-label="Toggle Navigation menu">
-      <span class="menu-icon">≡</span> <span>MENU</span>
-    </button>
+    <button class="pill-nav-btn pill-menu" id="menuToggle" aria-label="Toggle navigation menu" aria-controls="navDropdown" aria-expanded="false"><span class="menu-icon" aria-hidden="true">≡</span> <span>MENU</span></button>
   </div>
 
   <!-- Mobile / Desktop Expanded Dropdown Menu -->
-  <nav class="nav-dropdown" id="navDropdown" aria-label="Main Navigation">
+  <nav class="nav-dropdown" id="navDropdown" aria-label="Main navigation">
     <a href="#home">00 — HOME</a>
     <a href="#about">01 — ABOUT ME</a>
     <a href="#skills">02 — WHAT I DO (SKILLS)</a>
@@ -46,15 +44,15 @@
 <main id="home">
   <!-- HERO SECTION WITH LIQUID GLASS VISUAL & HOLOGRAPHIC AURAS -->
   <section class="hero-section">
-    <div class="hero-aura hero-aura-1"></div>
-    <div class="hero-aura hero-aura-2"></div>
+    <div class="hero-aura hero-aura-1" aria-hidden="true"></div>
+    <div class="hero-aura hero-aura-2" aria-hidden="true"></div>
     
     <div class="container hero-container">
       <div class="hero-left-ticker">
         <div class="ticker-badge">LOCATION</div>
         <div class="ticker-val">Coimbatore, India</div>
         
-        <div class="ticker-badge" style="margin-top:28px;">SPECIALIZATIONS</div>
+        <div class="ticker-badge ticker-badge-gap">SPECIALIZATIONS</div>
         <ul class="hero-skills-stack">
           <li>MACHINE LEARNING</li>
           <li>DATA ANALYTICS</li>
@@ -83,7 +81,10 @@
 
       <div class="hero-right-visual">
         <div class="glass-frame tilted-card">
-          <img src="liquid_glass_ui.jpg" alt="Liquid Glass UI Reference" class="liquid-glass-img">
+          <picture>
+            <source srcset="assets/liquid_glass_ui.webp" type="image/webp">
+            <img src="liquid_glass_ui.jpg" alt="Liquid Glass UI Reference" class="liquid-glass-img" width="800" height="447" fetchpriority="high" decoding="async">
+          </picture>
           <div class="glass-stat-badge">
             <span class="stat-label">FOCUS</span>
             <span class="stat-val">B.E. CSE (2024–2028)</span>
@@ -94,7 +95,7 @@
   </section>
 
   <!-- MARQUEE TICKER RIBBON -->
-  <div class="marquee-ribbon">
+  <div class="marquee-ribbon" aria-hidden="true">
     <div class="marquee-track">
       <span>MACHINE LEARNING</span> <span class="bullet">•</span>
       <span>DATA ANALYTICS</span> <span class="bullet">•</span>
@@ -158,7 +159,7 @@
             </div>
           </div>
           
-          <a href="#contact" class="btn-primary-gradient" style="margin-top:28px;">LET'S WORK TOGETHER</a>
+          <a href="#contact" class="btn-primary-gradient btn-spaced">LET'S WORK TOGETHER</a>
         </div>
       </div>
     </div>
@@ -375,7 +376,7 @@
             <span class="project-year">2026</span>
             <a href="https://github.com/poornaashreepraveenraj" target="_blank" rel="noopener" class="project-link-btn">VIEW GITHUB →</a>
           </div>
-
+        </div>
       </div>
     </div>
   </section>
@@ -497,7 +498,7 @@
             <strong>Topics:</strong> LiDAR sensing, IoT architecture, MQTT, HTTP, relay control, voice-enabled systems.<br>
             <strong>Takeaway:</strong> Controlled 230V bulb via MQTT/relay dashboard &amp; Google Assistant; validated final-project problem statements.
           </div>
-          <a href="iot.html" class="project-link-btn" style="margin-top: 14px; display: inline-block;">EXPLORE IOT TASKS ⚡</a>
+          <a href="iot.html" class="project-link-btn protosem-cta">EXPLORE IOT TASKS ⚡</a>
         </div>
       </div>
     </div>
@@ -513,39 +514,39 @@
       <div class="services-6grid">
         <div class="service-card tilted-card">
           <span class="service-num">TASK 01</span>
-          <h3 style="margin-top: 10px;">ESP32 Web Server</h3>
-          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Embedded HTTP web server on port 80 mapping GET routes to physical GPIO 2 LED control.</p>
+          <h3 class="service-card-title">ESP32 Web Server</h3>
+          <p class="service-card-text">Embedded HTTP web server on port 80 mapping GET routes to physical GPIO 2 LED control.</p>
           <a href="iot.html#task1" class="project-link-btn">VIEW TASK 1 →</a>
         </div>
         <div class="service-card tilted-card">
           <span class="service-num">TASK 02</span>
-          <h3 style="margin-top: 10px;">Adafruit IO MQTT</h3>
-          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Decoupled publish/subscribe MQTT cloud messaging driving a 5V AC relay on GPIO 23.</p>
+          <h3 class="service-card-title">Adafruit IO MQTT</h3>
+          <p class="service-card-text">Decoupled publish/subscribe MQTT cloud messaging driving a 5V AC relay on GPIO 23.</p>
           <a href="iot.html#task2" class="project-link-btn">VIEW TASK 2 →</a>
         </div>
         <div class="service-card tilted-card">
           <span class="service-num">TASK 03</span>
-          <h3 style="margin-top: 10px;">IFTTT Voice Automation</h3>
-          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Google Assistant voice triggers triggering webhooks to update cloud MQTT feeds.</p>
+          <h3 class="service-card-title">IFTTT Voice Automation</h3>
+          <p class="service-card-text">Google Assistant voice triggers triggering webhooks to update cloud MQTT feeds.</p>
           <a href="iot.html#task3" class="project-link-btn">VIEW TASK 3 →</a>
         </div>
         <div class="service-card tilted-card">
           <span class="service-num">TASK 04</span>
-          <h3 style="margin-top: 10px;">Firebase Dashboard</h3>
-          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Live DHT11 &amp; LDR telemetry dashboard with authenticated control and active-low relay driving.</p>
+          <h3 class="service-card-title">Firebase Dashboard</h3>
+          <p class="service-card-text">Live DHT11 &amp; LDR telemetry dashboard with authenticated control and active-low relay driving.</p>
           <a href="iot.html#task4" class="project-link-btn">VIEW TASK 4 →</a>
         </div>
         <div class="service-card tilted-card">
           <span class="service-num">TASK 05</span>
-          <h3 style="margin-top: 10px;">Historical CSV Logging</h3>
-          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">NTP timestamped historical database logging, Chart.js trend visualization, and CSV export.</p>
+          <h3 class="service-card-title">Historical CSV Logging</h3>
+          <p class="service-card-text">NTP timestamped historical database logging, Chart.js trend visualization, and CSV export.</p>
           <a href="iot.html#task5" class="project-link-btn">VIEW TASK 5 →</a>
         </div>
-        <div class="service-card tilted-card" style="background: linear-gradient(135deg, rgba(249,115,22,0.15), rgba(225,29,72,0.15)); border-color: rgba(249,115,22,0.4);">
+        <div class="service-card tilted-card service-card-live">
           <span class="service-num">LIVE CLOUD APP</span>
-          <h3 style="margin-top: 10px;">Production Web App</h3>
-          <p style="font-size: 14px; color: var(--text-muted); margin-bottom: 16px;">Hosted application deployed on Firebase Hosting with authenticated cloud access.</p>
-          <a href="https://smartlightingiot.web.app/" target="_blank" rel="noopener" class="btn-primary-gradient" style="font-size: 11px; padding: 10px 18px;">LAUNCH LIVE APP ↗</a>
+          <h3 class="service-card-title">Production Web App</h3>
+          <p class="service-card-text">Hosted application deployed on Firebase Hosting with authenticated cloud access.</p>
+          <a href="https://smartlightingiot.web.app/" target="_blank" rel="noopener" class="btn-primary-gradient btn-small">LAUNCH LIVE APP ↗</a>
         </div>
       </div>
     </div>
@@ -625,7 +626,7 @@
 </main>
 
 <!-- BOTTOM MARQUEE FOOTER RIBBON -->
-<div class="marquee-ribbon marquee-footer">
+<div class="marquee-ribbon marquee-footer" aria-hidden="true">
   <div class="marquee-track">
     <span>LET'S MAKE DATA DRIVE IMPACTFUL DECISIONS</span> <span class="bullet">•</span>
     <span>DESIGNED FOR POORNAA SHREE PRAVEENRAJ © 2026</span> <span class="bullet">•</span>
