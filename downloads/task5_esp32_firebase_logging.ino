@@ -55,8 +55,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("
-Connected to Wi-Fi!");
+  Serial.println("\nConnected to Wi-Fi!");
 
   // NTP Time setup
   configTime(19800, 0, "pool.ntp.org");
@@ -87,8 +86,7 @@ void loop() {
     // Active-Low Relay Control: LOW = ON, HIGH = OFF
     digitalWrite(RELAY_PIN, currentBulbState ? LOW : HIGH);
 
-    Serial.printf("Temp: %.1fC, Hum: %.1f%%, LDR: %d, Relay: %s
-", 
+    Serial.printf("Temp: %.1fC, Hum: %.1f%%, LDR: %d, Relay: %s\n", 
                   temp, hum, ldr, currentBulbState ? "ON" : "OFF");
   }
 }

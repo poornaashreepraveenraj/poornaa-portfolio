@@ -59,8 +59,7 @@ void setup() {
     delay(500);
     Serial.print(".");
   }
-  Serial.println("
-WiFi connected!");
+  Serial.println("\nWiFi connected!");
 
   mqtt.subscribe(&relayFeed);
 }
