@@ -281,7 +281,8 @@ void loop() {
 
       <div class="doc-block">
         <h3>9. Problems Encountered &amp; Solutions</h3>
-        <p class="note-pending">Coming soon: the issues I hit while building Task 1 and how I fixed them.</p>
+        <p><strong>Problem:</strong> the ESP32 would not join the Wi-Fi network. The first sketch was connected to my phone hotspot, and the Serial Monitor just printed dots forever with no error. <strong>Solution:</strong> I added a limit to the connection loop so it stops after a number of attempts and prints <code>WiFi.status()</code>. That showed "Wi-Fi connection FAILED, status code 6" (disconnected) instead of hanging. I then checked the SSID and password and moved the board to the lab Wi-Fi network, after which it connected and printed its IP address.</p>
+        <p><strong>Problem:</strong> the control page only opened when my laptop was on the same Wi-Fi network as the ESP32. From any other network the IP address did not respond. <strong>Solution:</strong> for Task 1 I kept both devices on the same network. This limitation is the reason Task 2 moves control to the cloud with MQTT.</p>
       </div>
 
       <div class="doc-block">
@@ -732,7 +733,12 @@ ESP32 receives "ON"  ──► GPIO 23 HIGH ──► relay ──► bulb ON</p
 
       <div class="doc-block">
         <h3>10. Testing Under Different Conditions</h3>
-        <p class="note-pending">Coming soon: results of testing the automation in different conditions (for example repeated commands, different phrasing, and the ESP32 reconnecting after Wi-Fi loss).</p>
+        <ul>
+          <li><strong>ON and OFF commands:</strong> "Activate bulb ON" and "activate bulb OFF" each switched the bulb through IFTTT → Adafruit IO → ESP32, as shown in Video 3.1.</li>
+          <li><strong>Different phrasing:</strong> Google Assistant only triggers the applet when the exact scene name is spoken. Other wordings did not reach IFTTT, so the scene names have to be short and easy to say.</li>
+          <li><strong>Repeated commands:</strong> saying ON twice simply writes <code>1</code> to the feed again. The firmware sets the relay to the requested state rather than toggling it, so a repeated command leaves the bulb in the same state.</li>
+          <li><strong>Voice and dashboard together:</strong> the voice applets and the Adafruit IO toggle write to the same <code>relay</code> feed, so the bulb follows whichever was used last and the dashboard toggle stays in sync with the voice commands.</li>
+        </ul>
       </div>
 
       <div class="doc-block">
