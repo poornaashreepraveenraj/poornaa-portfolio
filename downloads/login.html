@@ -1,44 +1,607 @@
-<div class="auth-container">
-  <h2>Sign In to Forge</h2>
-  
-  <!-- Email/Password Login -->
-  <form id="loginForm">
-    <input type="email" id="email" placeholder="Email" required>
-    <input type="password" id="password" placeholder="Password" required>
-    <button type="submit">Sign In</button>
-  </form>
-  
-  <div class="divider">OR</div>
-  
-  <!-- Google Sign-In -->
-  <button id="googleSignIn" class="google-button">
-    <img src="google-logo.png" alt="Google">
-    Sign in with Google
-  </button>
-  
-  <!-- Switch to Signup -->
-  <p>Don't have an account? <a href="#" onclick="toggleSignup()">Sign up</a></p>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lighting - Login</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    min-height: 100vh;
+    background: #f4efe3;
+    color: #111;
+    font-family: Arial, Helvetica, sans-serif;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.login-page {
+    width: 100%;
+    max-width: 1250px;
+    min-height: 680px;
+    margin: 25px;
+    background: #f9f5eb;
+    border: 1px solid #111;
+
+    display: grid;
+    grid-template-columns: 1fr 430px;
+}
+
+.left-panel {
+    padding: 50px;
+    border-right: 1px solid #222;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+}
+
+.logo span {
+    color: #e87928;
+}
+
+.left-content {
+    margin-top: 60px;
+}
+
+.left-content small {
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.left-content h1 {
+    font-size: clamp(55px, 7vw, 100px);
+    line-height: .88;
+    letter-spacing: -5px;
+    margin: 25px 0;
+}
+
+.left-content h1 span {
+    color: #858585;
+}
+
+.left-content p {
+    max-width: 430px;
+    color: #666;
+    line-height: 1.6;
+    font-size: 14px;
+}
+
+.system-info {
+    font-size: 12px;
+    color: #777;
+}
+
+.login-panel {
+    padding: 50px 42px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.login-panel h2 {
+    font-size: 35px;
+    margin: 0 0 8px;
+    letter-spacing: -1px;
+}
+
+.subtitle {
+    color: #777;
+    font-size: 14px;
+    margin-bottom: 35px;
+}
+
+.tabs {
+    display: flex;
+    border-bottom: 1px solid #bbb;
+    margin-bottom: 25px;
+}
+
+.tab {
+    flex: 1;
+    padding: 13px;
+    border: none;
+    background: transparent;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.tab.active {
+    background: #111;
+    color: white;
+}
+
+label {
+    display: block;
+    margin-bottom: 7px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+input {
+    width: 100%;
+    padding: 13px;
+    margin-bottom: 18px;
+
+    background: #fffdf7;
+    border: 1px solid #999;
+
+    font-size: 14px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+input:focus {
+    outline: 2px solid #e87928;
+}
+
+.submit-btn {
+    width: 100%;
+    padding: 14px;
+
+    background: #111;
+    color: white;
+
+    border: none;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.submit-btn:hover {
+    background: #e87928;
+}
+
+.google-divider {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin: 20px 0;
+
+    font-size: 12px;
+    color: #777;
+}
+
+.google-btn {
+    width: 100%;
+    padding: 14px;
+
+    background: #f9f5eb;
+    color: #111;
+
+    border: 1px solid #888;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.google-btn:hover {
+    background: #111;
+    color: white;
+}
+
+.google-btn:disabled {
+    opacity: .5;
+    cursor: not-allowed;
+}
+
+.message {
+    margin-top: 15px;
+    text-align: center;
+    font-size: 13px;
+    color: #555;
+    min-height: 20px;
+}
+
+.back {
+    display: block;
+    margin-top: 25px;
+
+    text-align: center;
+
+    color: #333;
+    text-decoration: none;
+
+    font-size: 13px;
+}
+
+.back:hover {
+    color: #e87928;
+}
+
+@media (max-width: 850px) {
+
+    .login-page {
+        grid-template-columns: 1fr;
+    }
+
+    .left-panel {
+        display: none;
+    }
+
+    .login-panel {
+        padding: 45px 30px;
+    }
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<div class="login-page">
+
+
+<section class="left-panel">
+
+    <div class="logo">
+        ● SMART <span>LIGHTING</span>
+    </div>
+
+
+    <div class="left-content">
+
+        <small>
+            [ SECURE ACCESS ]
+        </small>
+
+        <h1>
+            CONTROL<br>
+            <span>SMARTER.</span>
+        </h1>
+
+        <p>
+
+            Access your environmental
+            monitoring dashboard and control
+            the connected lighting system
+            from one place.
+
+        </p>
+
+    </div>
+
+
+    <div class="system-info">
+
+        ESP32 · FIREBASE · IoT
+
+    </div>
+
+</section>
+
+
+<section class="login-panel">
+
+    <h2>
+        Welcome
+    </h2>
+
+    <div class="subtitle">
+        Sign in to your Smart Lighting dashboard
+    </div>
+
+
+    <div class="tabs">
+
+        <button
+            class="tab active"
+            id="loginTab">
+
+            SIGN IN
+
+        </button>
+
+
+        <button
+            class="tab"
+            id="registerTab">
+
+            CREATE ACCOUNT
+
+        </button>
+
+    </div>
+
+
+    <form id="authForm">
+
+        <label for="email">
+            EMAIL
+        </label>
+
+        <input
+            type="email"
+            id="email"
+            placeholder="Enter your email"
+            required>
+
+
+        <label for="password">
+            PASSWORD
+        </label>
+
+        <input
+            type="password"
+            id="password"
+            placeholder="Enter your password"
+            required>
+
+
+        <button
+            type="submit"
+            class="submit-btn"
+            id="submitBtn">
+
+            SIGN IN
+
+        </button>
+
+    </form>
+
+
+    <div class="google-divider">
+        OR
+    </div>
+
+
+    <button
+        type="button"
+        class="google-btn"
+        id="googleBtn">
+
+        Continue with Google
+
+    </button>
+
+
+    <div
+        class="message"
+        id="message">
+    </div>
+
+
+    <a
+        href="landing.html"
+        class="back">
+
+        ← Back to Home
+
+    </a>
+
+</section>
+
 </div>
 
-<script>
-firebase.auth().onAuthStateChanged(user => {
-  if (user) {
-    window.location.href = "/dashboard";
-  }
-});
 
-document.getElementById("loginForm").addEventListener("submit", (e) => {
-  e.preventDefault();
-  const email = document.getElementById("email").value;
-  const password = document.getElementById("password").value;
-  
-  firebase.auth().signInWithEmailAndPassword(email, password)
-    .catch(error => alert(error.message));
-});
+<script type="module">
 
-document.getElementById("googleSignIn").addEventListener("click", () => {
-  const provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider)
-    .catch(error => alert(error.message));
-});
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+
+import {
+    getAuth,
+    signInWithEmailAndPassword,
+    createUserWithEmailAndPassword,
+    GoogleAuthProvider,
+    signInWithPopup
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "YOUR_FIREBASE_WEB_API_KEY",
+
+    authDomain:
+        "smartlightingiot.firebaseapp.com",
+
+    databaseURL:
+        "https://smartlightingiot-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+    projectId:
+        "smartlightingiot",
+
+    storageBucket:
+        "smartlightingiot.firebasestorage.app",
+
+    messagingSenderId:
+        "YOUR_MESSAGING_SENDER_ID",
+
+    appId:
+        "YOUR_FIREBASE_APP_ID",
+
+    measurementId:
+        "YOUR_MEASUREMENT_ID"
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+const auth =
+    getAuth(app);
+
+
+let registerMode = false;
+
+
+const loginTab =
+    document.getElementById("loginTab");
+
+const registerTab =
+    document.getElementById("registerTab");
+
+const submitBtn =
+    document.getElementById("submitBtn");
+
+const googleBtn =
+    document.getElementById("googleBtn");
+
+const message =
+    document.getElementById("message");
+
+
+loginTab.onclick = () => {
+
+    registerMode = false;
+
+    loginTab.classList.add("active");
+
+    registerTab.classList.remove("active");
+
+    submitBtn.textContent =
+        "SIGN IN";
+
+    message.textContent = "";
+};
+
+
+registerTab.onclick = () => {
+
+    registerMode = true;
+
+    registerTab.classList.add("active");
+
+    loginTab.classList.remove("active");
+
+    submitBtn.textContent =
+        "CREATE ACCOUNT";
+
+    message.textContent = "";
+};
+
+
+document
+    .getElementById("authForm")
+    .addEventListener(
+        "submit",
+        async (event) => {
+
+            event.preventDefault();
+
+            const email =
+                document.getElementById("email").value;
+
+            const password =
+                document.getElementById("password").value;
+
+            message.textContent =
+                "Please wait...";
+
+            try {
+
+                if (registerMode) {
+
+                    await createUserWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+                    message.textContent =
+                        "Account created successfully.";
+
+                } else {
+
+                    await signInWithEmailAndPassword(
+                        auth,
+                        email,
+                        password
+                    );
+
+                    window.location.href =
+                        "dashboard.html";
+                }
+
+            } catch (error) {
+
+                console.error(error);
+
+                message.textContent =
+                    error.message;
+            }
+
+        }
+    );
+
+
+googleBtn.addEventListener(
+    "click",
+    async () => {
+
+        googleBtn.disabled = true;
+
+        googleBtn.textContent =
+            "SIGNING IN...";
+
+        message.textContent = "";
+
+        try {
+
+            const provider =
+                new GoogleAuthProvider();
+
+            await signInWithPopup(
+                auth,
+                provider
+            );
+
+            window.location.href =
+                "dashboard.html";
+
+        } catch (error) {
+
+            console.error(error);
+
+            message.textContent =
+                error.message;
+
+            googleBtn.disabled = false;
+
+            googleBtn.textContent =
+                "Continue with Google";
+        }
+
+    }
+);
+
 </script>
+
+</body>
+
+</html>

@@ -350,7 +350,7 @@ void loop() {
           <li>Created a feed named <code>relay</code>.</li>
           <li>Created a dashboard named <strong>ESP32 Smart Bulb</strong>.</li>
           <li>Added a <strong>Toggle</strong> block titled "Relay Control", linked to the <code>relay</code> feed, with Button On text <code>ON</code> → value <code>1</code> and Button Off text <code>OFF</code> → value <code>0</code>.</li>
-          <li>Put the Wi-Fi credentials, username and AIO Key into the sketch, flashed it and confirmed "MQTT Connected!" in the Serial Monitor.</li>
+          <li>Put the Wi-Fi credentials, username and AIO Key into the sketch, flashed it and confirmed "Adafruit IO connected!" in the Serial Monitor.</li>
         </ol>
         <div class="evidence-gallery">
           <figure class="evidence-card"><a href="assets/iot/image3.png" target="_blank" rel="noopener" aria-label="Open full-size image: Adafruit IO toggle block settings with On value 1 and Off value 0"><img src="assets/iot/web/image3.webp" alt="Adafruit IO toggle block settings with On value 1 and Off value 0" width="1400" height="671" loading="lazy" decoding="async"></a><figcaption>Fig 2.1 — Toggle block configuration: ON publishes 1, OFF publishes 0 to the relay feed.</figcaption></figure>
@@ -384,101 +384,221 @@ Relay NO  ───► bulb live terminal   (bulb neutral → supply neutral)</p
         <ul>
           <li><strong>Client setup:</strong> <code>Adafruit_MQTT_Client mqtt(&amp;client, AIO_SERVER, 1883, AIO_USERNAME, AIO_KEY)</code> creates the MQTT connection over a <code>WiFiClient</code>.</li>
           <li><strong>Subscription:</strong> <code>Adafruit_MQTT_Subscribe relayFeed(&amp;mqtt, AIO_USERNAME "/feeds/relay")</code> plus <code>mqtt.subscribe(&amp;relayFeed)</code> in <code>setup()</code>.</li>
-          <li><strong>Reconnect:</strong> <code>MQTT_connect()</code> runs at the top of every loop and reconnects if the broker connection dropped.</li>
-          <li><strong>Command handling:</strong> <code>mqtt.readSubscription(5000)</code> waits up to 5 s for a message. The payload is trimmed and compared: <code>"1"</code>/<code>"ON"</code> sets GPIO 23 HIGH, <code>"0"</code>/<code>"OFF"</code> sets it LOW. Accepting both forms is what lets Task 3 reuse this firmware.</li>
-          <li><strong>Keep-alive:</strong> <code>mqtt.ping()</code> keeps the connection open during idle periods.</li>
-        </ul>
+          <li><strong>Reconnect:</strong> <code>MQTT_connect()</code> runs at the top of every loop. If the broker connection dropped it reconnects, and on failure it prints the error and retries after 5 s.</li>
+          <li><strong>Command handling:</strong> <code>mqtt.readSubscription(1000)</code> waits up to 1 s for a message. The payload is trimmed and compared: <code>"1"</code>/<code>"ON"</code> sets GPIO 23 HIGH, <code>"0"</code>/<code>"OFF"</code> sets it LOW. Accepting both forms is what lets Task 3 reuse this firmware.</li>
+                  </ul>
         <details class="code-details"><summary>Show full source — task2_3_esp32_mqtt.ino</summary><pre class="code-pre"><code>/*
  * TASK 02 &amp; TASK 03: ESP32 Adafruit IO MQTT Relay Control
- * Shared codebase for Task 2 (Adafruit IO Dashboard) &amp; Task 3 (IFTTT Voice Control)
- * Board: ESP32 Dev Module
- * Relay Pin: GPIO 23
- * Sanitized for public release - Replace credentials before upload.
+ * Shared firmware for Task 2 (Adafruit IO dashboard) and Task 3 (IFTTT voice control)
+ * Board: ESP32 Dev Module   Relay: GPIO 23   Feed: &lt;username&gt;/feeds/relay
+ * This is the firmware that ran on the board. Credentials have been
+ * replaced with placeholders for public release - fill them in before upload.
  */
 
 #include &lt;WiFi.h&gt;
 #include &quot;Adafruit_MQTT.h&quot;
 #include &quot;Adafruit_MQTT_Client.h&quot;
 
-// Wi-Fi Credentials
-#define WLAN_SSID       &quot;YOUR_WIFI_SSID_HERE&quot;
-#define WLAN_PASS       &quot;YOUR_WIFI_PASSWORD_HERE&quot;
+// =================================================
+// Wi-Fi
+// =================================================
 
-// Adafruit IO Credentials
-#define AIO_SERVER      &quot;io.adafruit.com&quot;
-#define AIO_SERVERPORT  1883
-#define AIO_USERNAME    &quot;YOUR_ADAFRUIT_USERNAME_HERE&quot;
-#define AIO_KEY         &quot;YOUR_ADAFRUIT_AIO_KEY_HERE&quot;
+#define WIFI_SSID     &quot;YOUR_WIFI_SSID_HERE&quot;
+#define WIFI_PASSWORD &quot;YOUR_WIFI_PASSWORD_HERE&quot;
 
-#define RELAY_PIN       23
+// =================================================
+// Adafruit IO
+// =================================================
+
+#define AIO_SERVER     &quot;io.adafruit.com&quot;
+#define AIO_SERVERPORT 1883
+
+#define AIO_USERNAME   &quot;YOUR_ADAFRUIT_USERNAME_HERE&quot;
+
+#define AIO_KEY        &quot;YOUR_ADAFRUIT_AIO_KEY_HERE&quot;
+
+// =================================================
+// Relay
+// =================================================
+
+#define RELAY_PIN 23
+
+// =================================================
+// Wi-Fi client
+// =================================================
 
 WiFiClient client;
-Adafruit_MQTT_Client mqtt(&amp;client, AIO_SERVER, AIO_SERVERPORT, AIO_USERNAME, AIO_KEY);
 
-// Subscribe to the relay feed
-Adafruit_MQTT_Subscribe relayFeed = Adafruit_MQTT_Subscribe(&amp;mqtt, AIO_USERNAME &quot;/feeds/relay&quot;);
+// =================================================
+// MQTT client
+// =================================================
 
-void MQTT_connect() {
-  int8_t ret;
-  if (mqtt.connected()) return;
+Adafruit_MQTT_Client mqtt(
+  &amp;client,
+  AIO_SERVER,
+  AIO_SERVERPORT,
+  AIO_USERNAME,
+  AIO_KEY
+);
 
-  Serial.print(&quot;Connecting to MQTT... &quot;);
-  uint8_t retries = 3;
-  while ((ret = mqtt.connect()) != 0) {
-    Serial.println(mqtt.connectErrorString(ret));
-    Serial.println(&quot;Retrying MQTT connection in 5 seconds...&quot;);
-    mqtt.disconnect();
-    delay(5000);
-    retries--;
-    if (retries == 0) {
-      while (1);
-    }
-  }
-  Serial.println(&quot;MQTT Connected!&quot;);
-}
+// =================================================
+// Relay feed
+// =================================================
+
+Adafruit_MQTT_Subscribe relayFeed =
+  Adafruit_MQTT_Subscribe(
+    &amp;mqtt,
+    AIO_USERNAME &quot;/feeds/relay&quot;
+  );
+
+// =================================================
+// SETUP
+// =================================================
 
 void setup() {
+
   Serial.begin(115200);
+
+  delay(1000);
+
+  Serial.println();
+  Serial.println(&quot;================================&quot;);
+  Serial.println(&quot;ESP32 SMART BULB&quot;);
+  Serial.println(&quot;================================&quot;);
+
+  // -------------------------------------------------
+  // Relay
+  // -------------------------------------------------
+
   pinMode(RELAY_PIN, OUTPUT);
+
+  // LOW = OFF initially (this relay module switches ON with HIGH)
   digitalWrite(RELAY_PIN, LOW);
 
-  Serial.print(&quot;Connecting to &quot;);
-  Serial.println(WLAN_SSID);
-  WiFi.begin(WLAN_SSID, WLAN_PASS);
+  Serial.println(&quot;Relay initialized OFF&quot;);
+
+  // -------------------------------------------------
+  // Wi-Fi
+  // -------------------------------------------------
+
+  Serial.print(&quot;Connecting to Wi-Fi: &quot;);
+  Serial.println(WIFI_SSID);
+
+  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+
   while (WiFi.status() != WL_CONNECTED) {
+
     delay(500);
+
     Serial.print(&quot;.&quot;);
   }
-  Serial.println(&quot;\nWiFi connected!&quot;);
+
+  Serial.println();
+  Serial.println(&quot;Wi-Fi connected!&quot;);
+
+  Serial.print(&quot;IP Address: &quot;);
+  Serial.println(WiFi.localIP());
+
+  // -------------------------------------------------
+  // Subscribe to feed
+  // -------------------------------------------------
 
   mqtt.subscribe(&amp;relayFeed);
+
+  Serial.println(&quot;Subscribed to:&quot;);
+  Serial.println(AIO_USERNAME &quot;/feeds/relay&quot;);
 }
 
-void loop() {
-  MQTT_connect();
+// =================================================
+// MQTT CONNECTION
+// =================================================
 
-  Adafruit_MQTT_Subscribe *subscription;
-  while ((subscription = mqtt.readSubscription(5000))) {
-    if (subscription == &amp;relayFeed) {
-      Serial.print(F(&quot;Got: &quot;));
-      char *val = (char *)relayFeed.lastread;
-      Serial.println(val);
+bool MQTT_connect() {
 
-      String command = String(val);
-      command.trim();
-
-      if (command == &quot;1&quot; || command == &quot;ON&quot;) {
-        digitalWrite(RELAY_PIN, HIGH);
-        Serial.println(&quot;Relay turned ON&quot;);
-      } else if (command == &quot;0&quot; || command == &quot;OFF&quot;) {
-        digitalWrite(RELAY_PIN, LOW);
-        Serial.println(&quot;Relay turned OFF&quot;);
-      }
-    }
+  if (mqtt.connected()) {
+    return true;
   }
 
-  if (!mqtt.ping()) {
-    mqtt.disconnect();
+  Serial.println();
+  Serial.println(&quot;Connecting to Adafruit IO...&quot;);
+
+  int8_t ret = mqtt.connect();
+
+  if (ret == 0) {
+
+    Serial.println(&quot;Adafruit IO connected!&quot;);
+
+    return true;
+  }
+
+  Serial.print(&quot;MQTT connection failed: &quot;);
+  Serial.println(mqtt.connectErrorString(ret));
+
+  mqtt.disconnect();
+
+  return false;
+}
+
+// =================================================
+// MAIN LOOP
+// =================================================
+
+void loop() {
+
+  if (!MQTT_connect()) {
+
+    delay(5000);
+
+    return;
+  }
+
+  Adafruit_MQTT_Subscribe *subscription;
+
+  subscription = mqtt.readSubscription(1000);
+
+  if (subscription == &amp;relayFeed) {
+
+    String command =
+      (char *)relayFeed.lastread;
+
+    command.trim();
+
+    Serial.println();
+    Serial.println(&quot;================================&quot;);
+    Serial.print(&quot;MQTT MESSAGE: &quot;);
+    Serial.println(command);
+
+    // -----------------------------------------------
+    // ON
+    // -----------------------------------------------
+
+    if (command == &quot;1&quot; || command == &quot;ON&quot;) {
+
+      digitalWrite(RELAY_PIN, HIGH);
+
+      Serial.println(&quot;RELAY: ON&quot;);
+      Serial.println(&quot;BULB: ON&quot;);
+    }
+
+    // -----------------------------------------------
+    // OFF
+    // -----------------------------------------------
+
+    else if (command == &quot;0&quot; || command == &quot;OFF&quot;) {
+
+      digitalWrite(RELAY_PIN, LOW);
+
+      Serial.println(&quot;RELAY: OFF&quot;);
+      Serial.println(&quot;BULB: OFF&quot;);
+    }
+
+    else {
+
+      Serial.print(&quot;UNKNOWN VALUE: &quot;);
+      Serial.println(command);
+    }
+
+    Serial.println(&quot;================================&quot;);
   }
 }
 </code></pre></details>
@@ -492,7 +612,7 @@ void loop() {
         <div class="evidence-gallery">
           <figure class="evidence-card"><video src="assets/iot/task2_demo.mp4" poster="assets/iot/web/task2_demo_poster.jpg" width="960" height="540" controls muted playsinline preload="none" aria-label="Video 2.1 — Clicking the Adafruit IO dashboard toggle on the laptop switches the bulb through the relay."></video><figcaption>Video 2.1 — Clicking the Adafruit IO dashboard toggle on the laptop switches the bulb through the relay.</figcaption></figure>
           <figure class="evidence-card"><a href="assets/iot/web/task2_setup.webp" target="_blank" rel="noopener" aria-label="Open full-size image: ESP32 wired to a blue relay module switching a lit bulb, with the Adafruit IO dashboard on the laptop"><img src="assets/iot/web/task2_setup.webp" alt="ESP32 wired to a blue relay module switching a lit bulb, with the Adafruit IO dashboard on the laptop" width="1024" height="576" loading="lazy" decoding="async"></a><figcaption>Fig 2.3 — Hardware setup: ESP32, relay module and bulb (still from Video 2.1).</figcaption></figure>
-          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Screenshot coming soon</span><strong>Serial Monitor</strong><span>"MQTT Connected!" and the received "Got: 1 / 0" messages.</span></figure>
+          <figure class="media-placeholder" data-pending="true"><span class="ph-tag">Screenshot coming soon</span><strong>Serial Monitor</strong><span>"Adafruit IO connected!" and the received "MQTT MESSAGE: 1 / 0" lines.</span></figure>
         </div>
       </div>
 
@@ -758,7 +878,18 @@ Relay (GPIO 26) ◄┘      │                                            │
 
       <div class="doc-block">
         <h3>8. Complete Dashboard Source Code</h3>
-        <p class="note-pending">Coming soon: the deployed web app's source (landing, login and dashboard pages with their CSS/JS).</p>
+        <p>The web app is three static pages deployed with Firebase Hosting to the <code>smartlightingiot</code> project. Each page is self-contained (inline CSS and JS). The login and dashboard pages load the Firebase v12 modular SDK from the CDN.</p>
+        <ul>
+          <li><strong>landing.html</strong>: the "Smart Lighting" intro page that links to login.</li>
+          <li><strong>login.html</strong>: email/password sign-in and sign-up plus "Continue with Google" through Firebase Authentication.</li>
+          <li><strong>dashboard.html</strong>: realtime listeners on <code>/current</code> and <code>/history</code>, reads the threshold from <code>/control</code> and writes the mode and manual ON/OFF there, plus the Reading History table, the Chart.js history graph and the CSV download.</li>
+        </ul>
+        <p>The Firebase web config keys are replaced with placeholders in these copies.</p>
+        <div class="download-btn-group">
+          <a href="downloads/dashboard.html" download class="btn-primary-gradient">DOWNLOAD DASHBOARD.HTML</a>
+          <a href="downloads/login.html" download class="btn-primary-gradient">DOWNLOAD LOGIN.HTML</a>
+          <a href="downloads/landing.html" download class="btn-primary-gradient">DOWNLOAD LANDING.HTML</a>
+        </div>
       </div>
 
       <div class="doc-block">
@@ -877,14 +1008,16 @@ digitalWrite(RELAY_PIN, bulbState ? LOW : HIGH);   // active-low relay</pre>
 
       <div class="doc-block">
         <h3>8. Firmware Source Code</h3>
-        <p class="note-pending">The file below is a partial version: it covers sensor reading, manual/automatic logic and the active-low relay. The complete firmware, including the Firebase /current, /control and /history code, is coming soon.</p>
+        <p>This is the complete firmware that ran on the board, using the FirebaseClient library (Mobizt) with email/password user auth. It reads the sensors and <code>/control</code> every 3 s, writes <code>/current</code>, and pushes a <code>/history</code> record every 10 s. Credentials are replaced with placeholders.</p>
         <details class="code-details"><summary>Show full source — task5_esp32_firebase_logging.ino</summary><pre class="code-pre"><code>/*
  * TASK 04 &amp; TASK 05: ESP32 Firebase IoT Monitoring &amp; Logging
  * Board: ESP32 Dev Module
  * Sensors: DHT11 (GPIO 4), LDR Analog (GPIO 34)
  * Actuator: Active-Low Relay (GPIO 26)
- * Database: Firebase Realtime Database
- * Sanitized for public release - Replace Wi-Fi and Firebase keys before upload.
+ * Database: Firebase Realtime Database (project: smartlightingiot)
+ * Library: FirebaseClient by Mobizt (2.2.x)
+ * This is the firmware that ran on the board. Credentials have been
+ * replaced with placeholders for public release - fill them in before upload.
  */
 
 #define ENABLE_USER_AUTH
@@ -896,79 +1029,488 @@ digitalWrite(RELAY_PIN, bulbState ? LOW : HIGH);   // active-low relay</pre>
 #include &lt;DHT.h&gt;
 #include &lt;time.h&gt;
 
-#define WIFI_SSID       &quot;YOUR_WIFI_SSID_HERE&quot;
-#define WIFI_PASSWORD   &quot;YOUR_WIFI_PASSWORD_HERE&quot;
+#define WIFI_SSID &quot;YOUR_WIFI_SSID_HERE&quot;
+#define WIFI_PASSWORD &quot;YOUR_WIFI_PASSWORD_HERE&quot;
 
-#define API_KEY         &quot;YOUR_FIREBASE_API_KEY_HERE&quot;
-#define DATABASE_URL    &quot;https://YOUR_PROJECT_ID-default-rtdb.firebaseio.com&quot;
-#define USER_EMAIL      &quot;user@example.com&quot;
-#define USER_PASSWORD   &quot;YOUR_USER_PASSWORD_HERE&quot;
+#define API_KEY &quot;YOUR_FIREBASE_WEB_API_KEY&quot;
 
-#define DHT_PIN         4
-#define DHT_TYPE        DHT11
-#define LDR_PIN         34
-#define RELAY_PIN       26
+#define DATABASE_URL &quot;https://YOUR_PROJECT_ID-default-rtdb.REGION.firebasedatabase.app&quot;
+
+#define USER_EMAIL &quot;user@example.com&quot;
+#define USER_PASSWORD &quot;YOUR_USER_PASSWORD_HERE&quot;
+
+#define DHT_PIN 4
+#define DHT_TYPE DHT11
+
+#define LDR_PIN 34
+#define RELAY_PIN 26
+
 
 DHT dht(DHT_PIN, DHT_TYPE);
+
+WiFiClientSecure ssl_client;
+
+using AsyncClient = AsyncClientClass;
+
+AsyncClient aClient(ssl_client);
+
+UserAuth user_auth(
+    API_KEY,
+    USER_EMAIL,
+    USER_PASSWORD,
+    3000
+);
+
+FirebaseApp app;
+
+RealtimeDatabase Database;
+
+
+unsigned long lastSensorRead = 0;
+unsigned long lastHistoryLog = 0;
 
 const unsigned long SENSOR_INTERVAL = 3000;
 const unsigned long HISTORY_INTERVAL = 10000;
 
-unsigned long lastSensorTime = 0;
-unsigned long lastHistoryTime = 0;
 
+float temperature = 0;
+float humidity = 0;
+
+int ldrValue = 0;
 int ldrThreshold = 2000;
-String currentMode = &quot;AUTOMATIC&quot;;
-bool manualBulbState = false;
-bool currentBulbState = false;
+
+bool bulbState = false;
+
+String currentMode = &quot;MANUAL&quot;;
+
 
 void setup() {
-  Serial.begin(115200);
-  pinMode(RELAY_PIN, OUTPUT);
-  digitalWrite(RELAY_PIN, HIGH); // Active-Low Relay OFF
 
-  dht.begin();
-  WiFi.begin(WIFI_SSID, WIFI_PASSWORD);
+    Serial.begin(115200);
 
-  Serial.print(&quot;Connecting to Wi-Fi&quot;);
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(&quot;.&quot;);
-  }
-  Serial.println(&quot;\nConnected to Wi-Fi!&quot;);
+    delay(1000);
 
-  // NTP Time setup
-  configTime(19800, 0, &quot;pool.ntp.org&quot;);
+    dht.begin();
+
+    pinMode(LDR_PIN, INPUT);
+
+    pinMode(RELAY_PIN, OUTPUT);
+
+    digitalWrite(RELAY_PIN, HIGH);
+
+
+    WiFi.begin(
+        WIFI_SSID,
+        WIFI_PASSWORD
+    );
+
+    Serial.print(&quot;Connecting to WiFi&quot;);
+
+    while (WiFi.status() != WL_CONNECTED) {
+
+        Serial.print(&quot;.&quot;);
+
+        delay(500);
+
+    }
+
+    Serial.println();
+
+    Serial.println(&quot;WiFi connected&quot;);
+
+
+    ssl_client.setInsecure();
+
+
+    initializeApp(
+    aClient,
+    app,
+    getAuth(user_auth)
+    );
+
+
+    app.getApp&lt;RealtimeDatabase&gt;(Database);
+
+    Database.url(DATABASE_URL);
+
+
+    configTime(
+        19800,
+        0,
+        &quot;pool.ntp.org&quot;,
+        &quot;time.nist.gov&quot;
+    );
+
+
+    Serial.println(&quot;Firebase initialized&quot;);
+
 }
 
+
 void loop() {
-  unsigned long now = millis();
 
-  if (now - lastSensorTime &gt;= SENSOR_INTERVAL) {
-    lastSensorTime = now;
+    app.loop();
 
-    float temp = dht.readTemperature();
-    float hum = dht.readHumidity();
-    int ldr = analogRead(LDR_PIN);
 
-    if (isnan(temp) || isnan(hum)) {
-      Serial.println(&quot;Failed to read from DHT sensor!&quot;);
-      return;
+    if (!app.ready()) {
+        return;
     }
 
-    // Determine relay state based on Mode
+
+    unsigned long now = millis();
+
+
+    if (
+        now - lastSensorRead &gt;=
+        SENSOR_INTERVAL
+    ) {
+
+        lastSensorRead = now;
+
+        readSensors();
+
+        readControl();
+
+        updateCurrentData();
+
+    }
+
+
+    if (
+        now - lastHistoryLog &gt;=
+        HISTORY_INTERVAL
+    ) {
+
+        lastHistoryLog = now;
+
+        logHistory();
+
+    }
+
+}
+
+
+void readSensors() {
+
+    float newTemperature =
+        dht.readTemperature();
+
+    float newHumidity =
+        dht.readHumidity();
+
+
+    if (!isnan(newTemperature)) {
+
+        temperature =
+            newTemperature;
+
+    }
+
+
+    if (!isnan(newHumidity)) {
+
+        humidity =
+            newHumidity;
+
+    }
+
+
+    ldrValue =
+        analogRead(LDR_PIN);
+
+
+    Serial.println();
+    Serial.println(&quot;==============================&quot;);
+
+    Serial.print(&quot;Temperature : &quot;);
+    Serial.print(temperature);
+    Serial.println(&quot; C&quot;);
+
+    Serial.print(&quot;Humidity    : &quot;);
+    Serial.print(humidity);
+    Serial.println(&quot; %&quot;);
+
+    Serial.print(&quot;LDR         : &quot;);
+    Serial.println(ldrValue);
+
+    Serial.print(&quot;Threshold   : &quot;);
+    Serial.println(ldrThreshold);
+
+    Serial.print(&quot;Mode        : &quot;);
+    Serial.println(currentMode);
+
+    Serial.print(&quot;Bulb        : &quot;);
+    Serial.println(
+        bulbState ? &quot;ON&quot; : &quot;OFF&quot;
+    );
+
+    Serial.println(&quot;==============================&quot;);
+
+}
+
+
+void readControl() {
+
+    String mode =
+        Database.get&lt;String&gt;(
+            aClient,
+            &quot;/control/mode&quot;
+        );
+
+
+    if (mode.length() &gt; 0) {
+
+        currentMode =
+            mode;
+
+        currentMode.toUpperCase();
+
+    }
+
+
+    int threshold =
+        Database.get&lt;int&gt;(
+            aClient,
+            &quot;/control/ldrThreshold&quot;
+        );
+
+
+    if (threshold &gt; 0) {
+
+        ldrThreshold =
+            threshold;
+
+    }
+
+
+    bool manualBulb =
+        Database.get&lt;bool&gt;(
+            aClient,
+            &quot;/control/bulbState&quot;
+        );
+
+
+    /*
+       MANUAL MODE
+       Dashboard directly controls bulb.
+    */
+
     if (currentMode == &quot;MANUAL&quot;) {
-      currentBulbState = manualBulbState;
-    } else {
-      currentBulbState = (ldr &gt; ldrThreshold);
+
+        bulbState =
+            manualBulb;
+
     }
 
-    // Active-Low Relay Control: LOW = ON, HIGH = OFF
-    digitalWrite(RELAY_PIN, currentBulbState ? LOW : HIGH);
 
-    Serial.printf(&quot;Temp: %.1fC, Hum: %.1f%%, LDR: %d, Relay: %s\n&quot;, 
-                  temp, hum, ldr, currentBulbState ? &quot;ON&quot; : &quot;OFF&quot;);
-  }
+    /*
+       AUTO MODE
+
+       Brightness:
+       LDR &lt; threshold
+       → bulb OFF
+
+       Darkness:
+       LDR &gt; threshold
+       → bulb ON
+    */
+
+    else if (
+        currentMode == &quot;AUTO&quot; ||
+        currentMode == &quot;AUTOMATIC&quot;
+    ) {
+
+        if (
+            ldrValue &gt;
+            ldrThreshold
+        ) {
+
+            bulbState = true;
+
+        } else {
+
+            bulbState = false;
+
+        }
+
+    }
+
+
+    updateRelay();
+
+}
+
+
+void updateRelay() {
+
+    /*
+       Active LOW relay:
+
+       LOW  = relay ON
+       HIGH = relay OFF
+    */
+
+    if (bulbState) {
+
+        digitalWrite(
+            RELAY_PIN,
+            LOW
+        );
+
+    } else {
+
+        digitalWrite(
+            RELAY_PIN,
+            HIGH
+        );
+
+    }
+
+}
+
+
+void updateCurrentData() {
+
+    Database.set&lt;float&gt;(
+        aClient,
+        &quot;/current/temperature&quot;,
+        temperature
+    );
+
+
+    Database.set&lt;float&gt;(
+        aClient,
+        &quot;/current/humidity&quot;,
+        humidity
+    );
+
+
+    Database.set&lt;int&gt;(
+        aClient,
+        &quot;/current/ldr&quot;,
+        ldrValue
+    );
+
+
+    Database.set&lt;bool&gt;(
+        aClient,
+        &quot;/current/bulbState&quot;,
+        bulbState
+    );
+
+
+    Database.set&lt;String&gt;(
+        aClient,
+        &quot;/current/mode&quot;,
+        currentMode
+    );
+
+}
+
+
+String getTimestamp() {
+
+    struct tm timeinfo;
+
+    if (
+        !getLocalTime(
+            &amp;timeinfo
+        )
+    ) {
+
+        return &quot;N/A&quot;;
+
+    }
+
+
+    char buffer[25];
+
+    strftime(
+        buffer,
+        sizeof(buffer),
+        &quot;%Y-%m-%d %H:%M:%S&quot;,
+        &amp;timeinfo
+    );
+
+
+    return String(buffer);
+
+}
+
+
+void logHistory() {
+
+    String timestamp =
+        getTimestamp();
+
+
+    String json = &quot;{&quot;;
+
+    json +=
+        &quot;\&quot;temperature\&quot;:&quot; +
+        String(temperature, 1) +
+        &quot;,&quot;;
+
+    json +=
+        &quot;\&quot;humidity\&quot;:&quot; +
+        String(humidity, 1) +
+        &quot;,&quot;;
+
+    json +=
+        &quot;\&quot;ldr\&quot;:&quot; +
+        String(ldrValue) +
+        &quot;,&quot;;
+
+    json +=
+        &quot;\&quot;bulbState\&quot;:&quot; +
+        String(
+            bulbState ? &quot;true&quot; : &quot;false&quot;
+        ) +
+        &quot;,&quot;;
+
+    json +=
+        &quot;\&quot;mode\&quot;:\&quot;&quot; +
+        currentMode +
+        &quot;\&quot;,&quot;;
+
+    json +=
+        &quot;\&quot;timestamp\&quot;:\&quot;&quot; +
+        timestamp +
+        &quot;\&quot;&quot;;
+
+    json += &quot;}&quot;;
+
+
+    String result =
+        Database.push&lt;object_t&gt;(
+            aClient,
+            &quot;/history&quot;,
+            object_t(json)
+        );
+
+
+    if (
+        result.length() &gt; 0
+    ) {
+
+        Serial.print(
+            &quot;History logged: &quot;
+        );
+
+        Serial.println(result);
+
+    } else {
+
+        Serial.println(
+            &quot;History logging failed&quot;
+        );
+
+        Serial.println(
+            aClient.lastError().message()
+        );
+
+    }
+
 }
 </code></pre></details>
         <div class="download-btn-group">
@@ -1024,7 +1566,7 @@ void loop() {
         <h3>14. Source Code &amp; Project Files in Repository</h3>
         <ul>
           <li><a href="https://github.com/poornaashreepraveenraj/poornaa-portfolio/tree/main/downloads" target="_blank" rel="noopener" style="color:#34D399;">downloads/ folder on GitHub ↗</a>: all firmware for Tasks 1–5.</li>
-          <li>Web dashboard source: coming soon (see Task 4, section 8).</li>
+          <li>Web dashboard source (landing, login and dashboard pages): in the same <code>downloads/</code> folder, described in Task 4, section 8.</li>
         </ul>
       </div>
     </div>

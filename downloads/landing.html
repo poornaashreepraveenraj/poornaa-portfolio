@@ -1,55 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Forge Smart Home - Environmental Monitoring</title>
-  <style>
-    /* Dark theme with glassmorphism */
-    body {
-      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a2e 100%);
-      color: #fff;
-      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lighting</title>
+
+<style>
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    background: #f4efe3;
+    color: #111;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.page {
+    max-width: 1400px;
+    margin: 24px auto;
+    background: #f9f5eb;
+    border: 1px solid #111;
+}
+
+header {
+    height: 74px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 36px;
+    border-bottom: 1px solid #222;
+}
+
+.logo {
+    font-size: 22px;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.logo span {
+    color: #e87928;
+}
+
+.menu {
+    width: 40px;
+    height: 40px;
+    background: #111;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+}
+
+.hero {
+    padding: 65px 36px 80px;
+    border-bottom: 1px solid #222;
+}
+
+.small-title {
+    font-size: 13px;
+    font-weight: bold;
+    letter-spacing: 2px;
+    margin-bottom: 30px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: clamp(55px, 9vw, 125px);
+    line-height: 0.86;
+    letter-spacing: -7px;
+    font-weight: 800;
+}
+
+.hero h1 span {
+    color: #858585;
+}
+
+.hero-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-top: 55px;
+    gap: 40px;
+}
+
+.description {
+    max-width: 430px;
+    font-size: 15px;
+    line-height: 1.6;
+    color: #555;
+}
+
+.start-btn {
+    display: inline-block;
+    background: #111;
+    color: white;
+    padding: 17px 30px;
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.start-btn:hover {
+    background: #e87928;
+}
+
+.black-section {
+    background: #111;
+    color: #f8f3e8;
+    padding: 65px 36px 80px;
+}
+
+.black-section h2 {
+    margin: 0;
+    font-size: clamp(40px, 6vw, 76px);
+    line-height: 0.95;
+    letter-spacing: -3px;
+    max-width: 900px;
+}
+
+.black-section h2 span {
+    color: #e87928;
+}
+
+.features {
+    margin-top: 65px;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    border-top: 1px solid #555;
+}
+
+.feature {
+    padding: 30px 25px 20px 0;
+    border-right: 1px solid #555;
+    margin-right: 25px;
+}
+
+.feature:last-child {
+    border-right: none;
+}
+
+.feature-number {
+    font-size: 42px;
+    font-weight: bold;
+    color: #e87928;
+}
+
+.feature h3 {
+    font-size: 18px;
+    margin: 15px 0 10px;
+}
+
+.feature p {
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+footer {
+    padding: 22px 36px;
+    background: #f9f5eb;
+    display: flex;
+    justify-content: space-between;
+    font-size: 12px;
+    color: #666;
+}
+
+@media (max-width: 800px) {
+
+    header {
+        padding: 0 20px;
     }
-    
-    .hero {
-      backdrop-filter: blur(10px);
-      background: rgba(255, 255, 255, 0.05);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      border-radius: 12px;
-      padding: 60px 40px;
-      text-align: center;
+
+    .hero,
+    .black-section {
+        padding-left: 20px;
+        padding-right: 20px;
     }
-    
-    h1 {
-      font-size: 3em;
-      background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      margin-bottom: 20px;
+
+    .hero h1 {
+        letter-spacing: -4px;
     }
-    
-    .cta-button {
-      background: linear-gradient(135deg, #00d4ff 0%, #7c3aed 100%);
-      padding: 12px 40px;
-      border: none;
-      border-radius: 8px;
-      color: white;
-      font-weight: bold;
-      cursor: pointer;
-      transition: transform 0.3s;
+
+    .hero-bottom {
+        flex-direction: column;
+        align-items: flex-start;
     }
-    
-    .cta-button:hover {
-      transform: scale(1.05);
+
+    .features {
+        grid-template-columns: 1fr;
     }
-  </style>
+
+    .feature {
+        border-right: none;
+        border-bottom: 1px solid #555;
+        padding-bottom: 25px;
+    }
+
+    footer {
+        padding: 20px;
+    }
+}
+
+</style>
+
 </head>
+
 <body>
-  <div class="hero">
-    <h1>Forge Smart Home</h1>
-    <p>24/7 Environmental Monitoring & Automation</p>
-    <button class="cta-button" onclick="goToLogin()">Get Started</button>
-  </div>
+
+<div class="page">
+
+<header>
+
+    <div class="logo">
+        ● SMART <span>LIGHTING</span>
+    </div>
+
+    <div class="menu">
+        ≡
+    </div>
+
+</header>
+
+
+<section class="hero">
+
+    <div class="small-title">
+        [ IoT ENVIRONMENTAL MONITORING ]
+    </div>
+
+    <h1>
+        SMART<br>
+        <span>LIGHTING</span>
+    </h1>
+
+    <div class="hero-bottom">
+
+        <div class="description">
+
+            A connected environmental monitoring
+            and intelligent lighting system using
+            ESP32, Firebase, temperature,
+            humidity and light sensors.
+
+        </div>
+
+        <a
+            href="login.html"
+            class="start-btn">
+
+            GET STARTED →
+
+        </a>
+
+    </div>
+
+</section>
+
+
+<section class="black-section">
+
+    <h2>
+
+        Monitor your
+        environment and
+        <span>control light intelligently.</span>
+
+    </h2>
+
+
+    <div class="features">
+
+        <div class="feature">
+
+            <div class="feature-number">
+                01
+            </div>
+
+            <h3>
+                REAL-TIME MONITORING
+            </h3>
+
+            <p>
+                Temperature, humidity and
+                ambient light values are
+                continuously collected from
+                the connected sensors.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                02
+            </div>
+
+            <h3>
+                SMART LIGHTING
+            </h3>
+
+            <p>
+                Automatic lighting responds
+                to the measured LDR value,
+                while manual mode provides
+                direct user control.
+            </p>
+
+        </div>
+
+
+        <div class="feature">
+
+            <div class="feature-number">
+                03
+            </div>
+
+            <h3>
+                CLOUD CONNECTED
+            </h3>
+
+            <p>
+                Firebase stores current
+                readings and historical data
+                while providing the connection
+                between the hardware and dashboard.
+            </p>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<footer>
+
+    <span>
+        SMART LIGHTING IoT
+    </span>
+
+    <span>
+        ESP32 · FIREBASE · IoT
+    </span>
+
+</footer>
+
+</div>
+
 </body>
+
 </html>
