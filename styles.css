@@ -1247,3 +1247,24 @@ h1, h2, h3, h4 {
   .protosem-grid { grid-template-columns: 1fr; }
   .contact-dual-layout { grid-template-columns: 1fr; }
 }
+
+
+/* ==========================================================================
+   ACCESSIBILITY: visible keyboard focus & reduced motion
+   ========================================================================== */
+a:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid #FACC15;
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

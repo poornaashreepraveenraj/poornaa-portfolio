@@ -9,6 +9,9 @@
  */
 
 document.addEventListener('DOMContentLoaded', function () {
+  // Respect the visitor's "reduce motion" setting for all decorative effects
+  const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   // ---------- 1. Canvas Particle Background System ----------
   const canvas = document.createElement('canvas');
   canvas.id = 'particleCanvas';
@@ -97,13 +100,14 @@ document.addEventListener('DOMContentLoaded', function () {
       }
     }
 
-    requestAnimationFrame(animateParticles);
+    if (!reduceMotion) requestAnimationFrame(animateParticles);
   }
-  animateParticles();
+  animateParticles(); // draws a single static frame when reduced motion is on
 
 
   // ---------- 2. 3D Card Tilt Effects ----------
-  const tiltCards = document.querySelectorAll('.tilted-card, .service-card, .timeline-card, .protosem-card, .doc-block');
+  // Long reading panels (.doc-block) are intentionally excluded so text stays still while reading
+  const tiltCards = reduceMotion ? [] : document.querySelectorAll('.tilted-card, .service-card, .timeline-card, .protosem-card');
 
   tiltCards.forEach(function (card) {
     // Inject Glare overlay if missing
@@ -141,7 +145,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
   // ---------- 3. Magnet Buttons Physics ----------
-  const magnetBtns = document.querySelectorAll('.btn-primary-gradient, .pill-nav-btn, .project-link-btn, .task-nav-link');
+  const magnetBtns = reduceMotion ? [] : document.querySelectorAll('.btn-primary-gradient, .pill-nav-btn, .project-link-btn, .task-nav-link');
 
   magnetBtns.forEach(function (btn) {
     btn.addEventListener('mousemove', function (e) {
@@ -165,12 +169,22 @@ document.addEventListener('DOMContentLoaded', function () {
   if (menuToggle && navDropdown) {
     menuToggle.addEventListener('click', function (e) {
       e.stopPropagation();
-      navDropdown.classList.toggle('active');
+      const open = navDropdown.classList.toggle('active');
+      menuToggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && navDropdown.classList.contains('active')) {
+        navDropdown.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+        menuToggle.focus();
+      }
     });
 
     document.addEventListener('click', function (e) {
       if (!navDropdown.contains(e.target) && !menuToggle.contains(e.target)) {
         navDropdown.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
       }
     });
 

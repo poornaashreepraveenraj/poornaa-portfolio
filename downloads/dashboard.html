@@ -1,387 +1,1888 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dashboard — IoTP</title>
-<link rel="stylesheet" href="shared.css">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0">
+
+<title>Smart Lighting - Dashboard</title>
+
 <style>
-  .dash-nav {
-    display: flex; align-items: center; justify-content: space-between;
-  }
-  .live-badge {
-    display: flex; align-items: center; gap: 8px;
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 12px; color: var(--text-dim);
-  }
-  .live-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--orange); box-shadow: 0 0 10px var(--orange); animation: pulse 1.8s ease-in-out infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
 
-  .container { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; padding: 40px 24px 80px; }
+* {
+    box-sizing: border-box;
+}
 
-  .signout {
-    font-size: 13px; color: var(--text-faint); cursor: pointer; padding: 8px 16px;
-    border: 1px solid var(--card-border); border-radius: 999px; transition: all 0.2s var(--ease);
-  }
-  .signout:hover { color: var(--text); border-color: rgba(255,106,43,0.4); }
+body {
+    margin: 0;
+    background: #f4efe3;
+    color: #111;
+    font-family:
+        Arial,
+        Helvetica,
+        sans-serif;
+}
 
-  .grid-sensors {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+.page {
+    max-width: 1450px;
+    margin: 20px auto;
+    background: #f9f5eb;
+    border: 1px solid #111;
+}
+
+
+/* HEADER */
+
+header {
+    min-height: 72px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    border-bottom: 1px solid #222;
+}
+
+.logo {
+    font-size: 21px;
+    font-weight: 800;
+}
+
+.logo span {
+    color: #e87928;
+}
+
+.header-right {
+    display: flex;
+    align-items: center;
     gap: 18px;
-    margin: 32px 0;
-  }
-  .sensor-card { padding: 26px 22px; opacity: 0; animation: rise 0.5s var(--ease) forwards; }
-  .sensor-card:nth-child(1) { animation-delay: 0.05s; }
-  .sensor-card:nth-child(2) { animation-delay: 0.1s; }
-  .sensor-card:nth-child(3) { animation-delay: 0.15s; }
-  @keyframes rise { from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);} }
-  .sensor-label { font-size: 12px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-faint); margin-bottom: 10px; }
-  .sensor-value {
-    font-family: 'Bebas Neue', sans-serif;
-    font-size: 48px;
-    background: var(--fire-gradient);
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    line-height: 1;
-  }
-  .sensor-unit { font-size: 16px; color: var(--text-dim); margin-left: 4px; }
+    font-size: 12px;
+}
 
-  .row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 18px; }
-  @media (max-width: 750px) { .row2 { grid-template-columns: 1fr; } }
+.connection {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    color: #555;
+}
 
-  .panel { padding: 26px; }
-  .panel-title { font-size: 14px; font-weight: 700; margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; }
+.dot {
+    width: 8px;
+    height: 8px;
+    background: #3e9b5f;
+    border-radius: 50%;
+}
 
-  /* Bulb orb */
-  .bulb-section { display: flex; align-items: center; justify-content: center; flex-direction: column; padding: 20px 0; }
-  .bulb-orb {
-    width: 90px; height: 90px; border-radius: 50%;
-    background: radial-gradient(circle at 35% 30%, #3a3230, #14100f);
-    border: 2px solid rgba(255,255,255,0.06);
-    position: relative;
-    transition: all 0.4s var(--ease);
-    margin-bottom: 18px;
-  }
-  .bulb-orb.on {
-    background: radial-gradient(circle at 35% 30%, #ffe9c4, var(--gold) 40%, var(--orange) 80%);
-    box-shadow: 0 0 50px rgba(255,150,50,0.7), 0 0 100px rgba(255,100,30,0.4);
-    border-color: transparent;
-    animation: bulbPulse 2s ease-in-out infinite;
-  }
-  @keyframes bulbPulse {
-    0%,100% { box-shadow: 0 0 50px rgba(255,150,50,0.7), 0 0 100px rgba(255,100,30,0.4); }
-    50% { box-shadow: 0 0 65px rgba(255,150,50,0.9), 0 0 130px rgba(255,100,30,0.55); }
-  }
-  .bulb-status { font-size: 13px; color: var(--text-dim); margin-bottom: 16px; font-family: 'JetBrains Mono', monospace; }
+.signout {
+    background: #111;
+    color: white;
+    border: none;
+    padding: 11px 18px;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
 
-  /* Toggle */
-  .toggle { position: relative; width: 56px; height: 32px; }
-  .toggle input { opacity: 0; width: 0; height: 0; }
-  .slider {
-    position: absolute; cursor: pointer; inset: 0;
-    background: rgba(255,255,255,0.1); border-radius: 999px;
-    transition: 0.3s var(--ease);
-  }
-  .slider::before {
-    content: ''; position: absolute; height: 24px; width: 24px; left: 4px; top: 4px;
-    background: white; border-radius: 50%; transition: 0.3s var(--ease);
-  }
-  input:checked + .slider { background: var(--fire-gradient); }
-  input:checked + .slider::before { transform: translateX(24px); }
+.signout:hover {
+    background: #e87928;
+}
 
-  /* Mode tabs */
-  .mode-tabs { display: flex; gap: 8px; background: rgba(255,255,255,0.03); padding: 5px; border-radius: 12px; margin-bottom: 20px; }
-  .mode-tab {
-    flex: 1; text-align: center; padding: 10px; border-radius: 8px; font-size: 13px; font-weight: 600;
-    color: var(--text-dim); cursor: pointer; transition: all 0.25s var(--ease);
-  }
-  .mode-tab.active { background: var(--fire-gradient); color: #1a0a05; }
 
-  .threshold-row { display: none; }
-  .threshold-row.show { display: block; }
-  .threshold-label { display: flex; justify-content: space-between; font-size: 13px; color: var(--text-dim); margin-bottom: 10px; }
-  .threshold-value { color: var(--orange); font-weight: 700; font-family: 'JetBrains Mono', monospace; }
-  input[type="range"] {
-    width: 100%; height: 6px; border-radius: 999px; appearance: none;
-    background: linear-gradient(90deg, var(--gold), var(--orange), var(--red));
+/* HERO */
+
+.hero {
+    padding: 55px 30px 65px;
+    border-bottom: 1px solid #222;
+}
+
+.hero-small {
+    font-size: 12px;
+    letter-spacing: 2px;
+    font-weight: bold;
+    margin-bottom: 25px;
+}
+
+.hero h1 {
+    margin: 0;
+    font-size:
+        clamp(48px, 8vw, 105px);
+    line-height: .86;
+    letter-spacing: -6px;
+}
+
+.hero h1 span {
+    color: #858585;
+}
+
+.hero-description {
+    margin-top: 35px;
+    max-width: 600px;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.6;
+}
+
+
+/* CURRENT DATA */
+
+.section {
+    padding: 45px 30px;
+    border-bottom: 1px solid #222;
+}
+
+.section-title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 25px;
+}
+
+.section-title h2 {
+    margin: 0;
+    font-size: 25px;
+    letter-spacing: -1px;
+}
+
+.section-title span {
+    color: #777;
+    font-size: 12px;
+}
+
+
+/* SENSOR GRID */
+
+.sensor-grid {
+    display: grid;
+    grid-template-columns:
+        repeat(4, 1fr);
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+.sensor {
+    min-height: 190px;
+    padding: 25px;
+    border-right: 1px solid #222;
+}
+
+.sensor:last-child {
+    border-right: none;
+}
+
+.sensor-label {
+    font-size: 12px;
+    color: #666;
+    letter-spacing: 1px;
+    margin-bottom: 30px;
+}
+
+.sensor-value {
+    font-size: 52px;
+    font-weight: 800;
+    letter-spacing: -3px;
+}
+
+.sensor-unit {
+    font-size: 15px;
+    font-weight: normal;
+    color: #777;
+}
+
+.sensor-orange {
+    color: #e87928;
+}
+
+
+/* CONTROLS */
+
+.control-grid {
+    display: grid;
+    grid-template-columns:
+        1fr 1fr;
+    gap: 0;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+.control-box {
+    padding: 30px;
+    min-height: 210px;
+    border-right: 1px solid #222;
+}
+
+.control-box:last-child {
+    border-right: none;
+}
+
+.control-box h3 {
+    margin: 0 0 25px;
+    font-size: 18px;
+}
+
+.current-mode {
+    font-size: 14px;
+    margin-bottom: 22px;
+}
+
+.current-mode strong {
+    color: #e87928;
+}
+
+.button-row {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+button.control-btn {
+    padding: 13px 20px;
+    border: 1px solid #111;
+    background: #f9f5eb;
+    color: #111;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+button.control-btn:hover {
+    background: #e87928;
+    color: white;
+    border-color: #e87928;
+}
+
+button.control-btn.active {
+    background: #111;
+    color: white;
+}
+
+button.control-btn:disabled {
+    opacity: .35;
+    cursor: not-allowed;
+}
+
+.threshold {
+    display: inline-block;
+    background: #111;
+    color: white;
+    padding: 12px 18px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.threshold-text {
+    margin-top: 15px;
+    color: #666;
+    font-size: 13px;
+}
+
+
+/* DARK SECTION */
+
+.dark-section {
+    background: #111;
+    color: #f8f3e8;
+    padding: 50px 30px;
+}
+
+.dark-section h2 {
+    margin: 0;
+    font-size: 40px;
+    letter-spacing: -2px;
+}
+
+.dark-section h2 span {
+    color: #e87928;
+}
+
+.stats {
+    display: grid;
+    grid-template-columns:
+        repeat(3, 1fr);
+    margin-top: 45px;
+    border-top: 1px solid #555;
+}
+
+.stat {
+    padding: 25px 25px 15px 0;
+    border-right: 1px solid #555;
+    margin-right: 25px;
+}
+
+.stat:last-child {
+    border-right: none;
+}
+
+.stat-number {
+    font-size: 50px;
+    font-weight: bold;
+}
+
+.stat-label {
+    color: #aaa;
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+
+/* GRAPH */
+
+.graph-controls {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 1px;
+}
+
+.graph-controls select {
+    padding: 10px 14px;
+    background: #f9f5eb;
+    color: #111;
+    border: 1px solid #111;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.graph-controls select:focus {
     outline: none;
-  }
-  input[type="range"]::-webkit-slider-thumb {
-    appearance: none; width: 18px; height: 18px; border-radius: 50%;
-    background: white; cursor: pointer; box-shadow: 0 0 10px rgba(0,0,0,0.4);
-  }
+    border-color: #e87928;
+}
 
-  /* History table */
-  .table-wrap { overflow-x: auto; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th { text-align: left; padding: 10px 12px; color: var(--text-faint); font-weight: 600; text-transform: uppercase; font-size: 11px; letter-spacing: 0.05em; border-bottom: 1px solid var(--card-border); }
-  td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.04); color: var(--text-dim); font-family: 'JetBrains Mono', monospace; }
-  tr:hover td { color: var(--text); }
+.graph-container {
+    width: 100%;
+    height: 360px;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+    padding: 20px 0;
+}
 
-  .export-btn { font-size: 13px; padding: 8px 18px; }
+#historyChart {
+    width: 100% !important;
+    height: 100% !important;
+}
 
-  .empty-state { text-align: center; padding: 40px 20px; color: var(--text-faint); font-size: 14px; }
+
+/* HISTORY */
+
+.history {
+    overflow-x: auto;
+    border-top: 1px solid #222;
+    border-bottom: 1px solid #222;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 750px;
+}
+
+th {
+    text-align: left;
+    padding: 16px;
+    font-size: 11px;
+    letter-spacing: 1px;
+    background: #111;
+    color: white;
+}
+
+td {
+    padding: 15px 16px;
+    border-bottom: 1px solid #ccc;
+    font-size: 13px;
+}
+
+tr:last-child td {
+    border-bottom: none;
+}
+
+
+/* DOWNLOAD */
+
+.download-btn {
+    margin-top: 20px;
+    padding: 13px 20px;
+    background: #111;
+    color: white;
+    border: none;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.download-btn:hover {
+    background: #e87928;
+}
+
+
+/* FOOTER */
+
+footer {
+    padding: 22px 30px;
+    display: flex;
+    justify-content: space-between;
+    color: #777;
+    font-size: 11px;
+}
+
+
+/* MOBILE */
+
+@media (max-width: 850px) {
+
+    .sensor-grid {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .sensor:nth-child(2) {
+        border-right: none;
+    }
+
+    .sensor:nth-child(1),
+    .sensor:nth-child(2) {
+        border-bottom: 1px solid #222;
+    }
+
+    .control-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .control-box {
+        border-right: none;
+        border-bottom: 1px solid #222;
+    }
+
+    .control-box:last-child {
+        border-bottom: none;
+    }
+
+    .stats {
+        grid-template-columns: 1fr;
+    }
+
+    .stat {
+        border-right: none;
+        border-bottom: 1px solid #555;
+        padding-bottom: 25px;
+        margin-bottom: 10px;
+    }
+}
+
+@media (max-width: 550px) {
+
+    .sensor-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .sensor {
+        border-right: none;
+        border-bottom: 1px solid #222;
+    }
+
+    .sensor:last-child {
+        border-bottom: none;
+    }
+
+    header {
+        padding: 0 18px;
+    }
+
+    .connection {
+        display: none;
+    }
+
+    .hero,
+    .section,
+    .dark-section {
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+
+    .hero h1 {
+        letter-spacing: -3px;
+    }
+}
+
 </style>
+
 </head>
+
 <body>
-  <div class="glow-bg"></div>
 
-  <nav class="nav">
-    <div class="nav-logo">IoTP</div>
-    <div class="dash-nav" style="gap: 20px;">
-      <div class="live-badge"><span class="live-dot"></span> LIVE</div>
-      <div class="signout" id="signOutBtn">Sign out</div>
-    </div>
-  </nav>
 
-  <div class="container">
+<div class="page">
 
-    <div class="grid-sensors">
-      <div class="card sensor-card">
-        <div class="sensor-label">Temperature</div>
-        <div><span class="sensor-value" id="tempVal">—</span><span class="sensor-unit">°C</span></div>
-      </div>
-      <div class="card sensor-card">
-        <div class="sensor-label">Humidity</div>
-        <div><span class="sensor-value" id="humVal">—</span><span class="sensor-unit">%</span></div>
-      </div>
-      <div class="card sensor-card">
-        <div class="sensor-label">Ambient Light</div>
-        <div><span class="sensor-value" id="ldrVal">—</span><span class="sensor-unit">lx</span></div>
-      </div>
+
+<header>
+
+    <div class="logo">
+        ● SMART <span>LIGHTING</span>
     </div>
 
-    <div class="row2">
-      <div class="card panel">
-        <div class="panel-title">Bulb Control</div>
-        <div class="bulb-section">
-          <div class="bulb-orb" id="bulbOrb"></div>
-          <div class="bulb-status" id="bulbStatus">OFF</div>
-          <label class="toggle">
-            <input type="checkbox" id="bulbToggle">
-            <span class="slider"></span>
-          </label>
-        </div>
-      </div>
 
-      <div class="card panel">
-        <div class="panel-title">Automation Mode</div>
-        <div class="mode-tabs">
-          <div class="mode-tab active" id="manualTab">Manual</div>
-          <div class="mode-tab" id="autoTab">Automatic</div>
+    <div class="header-right">
+
+        <div class="connection">
+
+            <div class="dot"></div>
+
+            Firebase Connected
+
         </div>
-        <div class="threshold-row" id="thresholdRow">
-          <div class="threshold-label">
-            <span>Light threshold</span>
-            <span class="threshold-value" id="thresholdVal">500</span>
-          </div>
-          <input type="range" id="thresholdSlider" min="0" max="1023" value="500">
-          <p style="font-size: 12px; color: var(--text-faint); margin-top: 10px;">
-            Bulb turns ON automatically when light falls below this value.
-          </p>
-        </div>
-        <div id="manualNote" style="font-size: 12px; color: var(--text-faint);">
-          Control the bulb manually using the toggle.
-        </div>
-      </div>
+
+
+        <button
+            class="signout"
+            id="signOutBtn">
+
+            SIGN OUT
+
+        </button>
+
     </div>
 
-    <div class="card panel">
-      <div class="panel-title">
-        History
-        <button class="btn btn-ghost export-btn" id="exportBtn">Download CSV</button>
-      </div>
-      <div class="table-wrap">
+</header>
+
+
+<section class="hero">
+
+    <div class="hero-small">
+        [ REAL-TIME ENVIRONMENTAL MONITORING ]
+    </div>
+
+    <h1>
+        ENVIRONMENTAL<br>
+        <span>DASHBOARD</span>
+    </h1>
+
+    <div class="hero-description">
+
+        Monitor temperature, humidity and
+        ambient light while controlling the
+        connected lighting system through
+        Firebase.
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>
+            Current Environment
+        </h2>
+
+        <span>
+            LIVE DATA
+        </span>
+
+    </div>
+
+
+    <div class="sensor-grid">
+
+
+        <div class="sensor">
+
+            <div class="sensor-label">
+                TEMPERATURE
+            </div>
+
+            <div class="sensor-value">
+
+                <span id="temperature">
+                    --
+                </span>
+
+                <span class="sensor-unit">
+                    °C
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sensor">
+
+            <div class="sensor-label">
+                HUMIDITY
+            </div>
+
+            <div class="sensor-value">
+
+                <span id="humidity">
+                    --
+                </span>
+
+                <span class="sensor-unit">
+                    %
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sensor">
+
+            <div class="sensor-label">
+                LIGHT LEVEL
+            </div>
+
+            <div class="sensor-value">
+
+                <span id="ldr">
+                    --
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <div class="sensor">
+
+            <div class="sensor-label">
+                BULB STATUS
+            </div>
+
+            <div
+                class="sensor-value sensor-orange"
+                id="bulbStatus">
+
+                OFF
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>
+            Lighting Control
+        </h2>
+
+        <span>
+            ESP32 CONTROL
+        </span>
+
+    </div>
+
+
+    <div class="control-grid">
+
+
+        <div class="control-box">
+
+            <h3>
+                Operating Mode
+            </h3>
+
+
+            <div class="current-mode">
+
+                Current Mode:
+
+                <strong id="mode">
+                    MANUAL
+                </strong>
+
+            </div>
+
+
+            <div class="button-row">
+
+                <button
+                    class="control-btn"
+                    id="autoBtn">
+
+                    AUTO MODE
+
+                </button>
+
+
+                <button
+                    class="control-btn active"
+                    id="manualBtn">
+
+                    MANUAL MODE
+
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <div class="control-box">
+
+            <h3>
+                Manual Light Control
+            </h3>
+
+
+            <div class="current-mode">
+
+                Bulb:
+
+                <strong id="manualBulbStatus">
+                    OFF
+                </strong>
+
+            </div>
+
+
+            <div class="button-row">
+
+                <button
+                    class="control-btn"
+                    id="turnOnBtn">
+
+                    TURN ON
+
+                </button>
+
+
+                <button
+                    class="control-btn"
+                    id="turnOffBtn">
+
+                    TURN OFF
+
+                </button>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>
+            Automatic Lighting
+        </h2>
+
+        <span>
+            LDR THRESHOLD
+        </span>
+
+    </div>
+
+
+    <div class="threshold">
+
+        <span id="threshold">
+            2000
+        </span>
+
+    </div>
+
+
+    <div class="threshold-text">
+
+        Higher than threshold = bulb ON
+
+    </div>
+
+</section>
+
+
+<section class="dark-section">
+
+    <h2>
+
+        Historical
+        <span>Data.</span>
+
+    </h2>
+
+
+    <div class="stats">
+
+
+        <div class="stat">
+
+            <div
+                class="stat-number"
+                id="historyCount">
+
+                0
+
+            </div>
+
+            <div class="stat-label">
+                RECORDED READINGS
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div
+                class="stat-number"
+                id="historyTemperature">
+
+                --
+
+            </div>
+
+            <div class="stat-label">
+                LATEST TEMPERATURE °C
+            </div>
+
+        </div>
+
+
+        <div class="stat">
+
+            <div
+                class="stat-number"
+                id="historyLdr">
+
+                --
+
+            </div>
+
+            <div class="stat-label">
+                LATEST LIGHT LEVEL
+            </div>
+
+        </div>
+
+    </div>
+
+</section>
+
+
+<!-- GRAPH -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>
+            Sensor History Graph
+        </h2>
+
+        <span>
+            VISUAL DATA
+        </span>
+
+    </div>
+
+
+    <div class="graph-controls">
+
+        <label for="graphMetric">
+            SHOW:
+        </label>
+
+        <select id="graphMetric">
+
+            <option value="temperature">
+                Temperature
+            </option>
+
+            <option value="humidity">
+                Humidity
+            </option>
+
+            <option value="ldr">
+                Light Level
+            </option>
+
+        </select>
+
+    </div>
+
+
+    <div class="graph-container">
+
+        <canvas id="historyChart"></canvas>
+
+    </div>
+
+</section>
+
+
+<!-- HISTORY -->
+
+<section class="section">
+
+    <div class="section-title">
+
+        <h2>
+            Reading History
+        </h2>
+
+        <span>
+            FIREBASE REALTIME DATABASE
+        </span>
+
+    </div>
+
+
+    <div class="history">
+
         <table>
-          <thead>
-            <tr>
-              <th>Time</th>
-              <th>Temp (°C)</th>
-              <th>Humidity (%)</th>
-              <th>Light (lx)</th>
-              <th>Bulb</th>
-              <th>Mode</th>
-            </tr>
-          </thead>
-          <tbody id="historyBody"></tbody>
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        TIMESTAMP
+                    </th>
+
+                    <th>
+                        TEMP °C
+                    </th>
+
+                    <th>
+                        HUMIDITY %
+                    </th>
+
+                    <th>
+                        LDR
+                    </th>
+
+                    <th>
+                        BULB
+                    </th>
+
+                    <th>
+                        MODE
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody id="historyBody">
+
+            </tbody>
+
         </table>
-        <div class="empty-state" id="emptyState">No readings yet — waiting for your ESP32 to send data.</div>
-      </div>
+
     </div>
 
-  </div>
 
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
-  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
-  <script>
-    const firebaseConfig = {
-      apiKey: "AIzaSyDqE4kBjywupaCIgYl9QRCPz7cfUwUZYT0",
-      authDomain: "iotp-d8104.firebaseapp.com",
-      projectId: "iotp-d8104",
-      storageBucket: "iotp-d8104.firebasestorage.app",
-      messagingSenderId: "824642939920",
-      appId: "1:824642939920:web:7a4c06dc5e39fe92f7ee95",
-      databaseURL: "https://iotp-d8104-default-rtdb.firebaseio.com" // update once Realtime DB is created
-    };
-    firebase.initializeApp(firebaseConfig);
-    const auth = firebase.auth();
-    const db = firebase.firestore();
+    <button
+        class="download-btn"
+        id="downloadCsv">
 
-    let currentUser = null;
-    let currentMode = 'manual';
+        DOWNLOAD CSV
 
-    auth.onAuthStateChanged((user) => {
-      if (!user) {
-        window.location.href = "login.html";
-        return;
-      }
-      currentUser = user;
-      initDashboard();
-    });
+    </button>
 
-    document.getElementById('signOutBtn').addEventListener('click', () => {
-      auth.signOut().then(() => window.location.href = "landing.html");
-    });
+</section>
 
-    function initDashboard() {
-      // Realtime DB listeners (populated once ESP32 is sending data)
-      try {
-        const rtdb = firebase.database();
 
-        rtdb.ref('sensorData').limitToLast(1).on('child_added', (snap) => {
-          const d = snap.val();
-          if (d.temperature !== undefined) document.getElementById('tempVal').textContent = d.temperature;
-          if (d.humidity !== undefined) document.getElementById('humVal').textContent = d.humidity;
-          if (d.ldr !== undefined) document.getElementById('ldrVal').textContent = d.ldr;
-        });
+<footer>
 
-        rtdb.ref('sensorData').limitToLast(50).on('value', (snap) => {
-          const rows = [];
-          snap.forEach((child) => rows.unshift({ id: child.key, ...child.val() }));
-          renderHistory(rows);
-        });
+    <span>
+        SMART LIGHTING IoT
+    </span>
 
-        rtdb.ref('appliances/bulb').on('value', (snap) => {
-          const on = snap.val() === true || (snap.val() && snap.val().state === true);
-          setBulbUI(on);
-        });
-      } catch (e) {
-        console.log('Realtime Database not yet connected:', e.message);
-      }
+    <span>
+        ESP32 · FIREBASE
+    </span>
 
-      // Bulb toggle -> write to Realtime DB
-      document.getElementById('bulbToggle').addEventListener('change', (e) => {
-        const on = e.target.checked;
-        setBulbUI(on);
-        try {
-          firebase.database().ref('appliances/bulb').set(on);
-        } catch (err) { console.log(err); }
-      });
+</footer>
 
-      // Mode tabs
-      document.getElementById('manualTab').addEventListener('click', () => setMode('manual'));
-      document.getElementById('autoTab').addEventListener('click', () => setMode('automatic'));
 
-      // Threshold slider
-      const slider = document.getElementById('thresholdSlider');
-      slider.addEventListener('input', () => {
-        document.getElementById('thresholdVal').textContent = slider.value;
-      });
-      slider.addEventListener('change', () => {
-        saveSettings();
-      });
+</div>
 
-      // Load saved settings
-      db.collection('users').doc(currentUser.uid).get().then((doc) => {
-        if (doc.exists) {
-          const data = doc.data();
-          if (data.mode) setMode(data.mode, false);
-          if (data.threshold !== undefined) {
-            slider.value = data.threshold;
-            document.getElementById('thresholdVal').textContent = data.threshold;
-          }
+
+<!-- CHART.JS -->
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+
+<script type="module">
+
+import {
+    initializeApp
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-app.js";
+
+
+import {
+    getAuth,
+    onAuthStateChanged,
+    signOut
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-auth.js";
+
+
+import {
+    getDatabase,
+    ref,
+    onValue,
+    set
+}
+from
+"https://www.gstatic.com/firebasejs/12.2.1/firebase-database.js";
+
+
+const firebaseConfig = {
+
+    apiKey:
+        "YOUR_FIREBASE_WEB_API_KEY",
+
+    authDomain:
+        "smartlightingiot.firebaseapp.com",
+
+    databaseURL:
+        "https://smartlightingiot-default-rtdb.asia-southeast1.firebasedatabase.app",
+
+    projectId:
+        "smartlightingiot",
+
+    storageBucket:
+        "smartlightingiot.firebasestorage.app",
+
+    messagingSenderId:
+        "YOUR_MESSAGING_SENDER_ID",
+
+    appId:
+        "YOUR_FIREBASE_APP_ID",
+
+    measurementId:
+        "YOUR_MEASUREMENT_ID"
+};
+
+
+const app =
+    initializeApp(firebaseConfig);
+
+
+const auth =
+    getAuth(app);
+
+
+const db =
+    getDatabase(app);
+
+
+/* AUTHENTICATION */
+
+onAuthStateChanged(
+    auth,
+    (user) => {
+
+        if (!user) {
+
+            window.location.href =
+                "login.html";
+
         }
-      });
 
-      // CSV export
-      document.getElementById('exportBtn').addEventListener('click', exportCSV);
+    }
+);
+
+
+/* SIGN OUT */
+
+document
+    .getElementById("signOutBtn")
+    .addEventListener(
+        "click",
+        async () => {
+
+            await signOut(auth);
+
+            window.location.href =
+                "login.html";
+
+        }
+    );
+
+
+/* ELEMENTS */
+
+const temperature =
+    document.getElementById(
+        "temperature"
+    );
+
+
+const humidity =
+    document.getElementById(
+        "humidity"
+    );
+
+
+const ldr =
+    document.getElementById(
+        "ldr"
+    );
+
+
+const bulbStatus =
+    document.getElementById(
+        "bulbStatus"
+    );
+
+
+const manualBulbStatus =
+    document.getElementById(
+        "manualBulbStatus"
+    );
+
+
+const modeElement =
+    document.getElementById(
+        "mode"
+    );
+
+
+const threshold =
+    document.getElementById(
+        "threshold"
+    );
+
+
+const historyBody =
+    document.getElementById(
+        "historyBody"
+    );
+
+
+const historyCount =
+    document.getElementById(
+        "historyCount"
+    );
+
+
+const historyTemperature =
+    document.getElementById(
+        "historyTemperature"
+    );
+
+
+const historyLdr =
+    document.getElementById(
+        "historyLdr"
+    );
+
+
+const autoBtn =
+    document.getElementById(
+        "autoBtn"
+    );
+
+
+const manualBtn =
+    document.getElementById(
+        "manualBtn"
+    );
+
+
+const turnOnBtn =
+    document.getElementById(
+        "turnOnBtn"
+    );
+
+
+const turnOffBtn =
+    document.getElementById(
+        "turnOffBtn"
+    );
+
+
+let currentMode = "MANUAL";
+
+let historyData = {};
+
+let historyChart = null;
+
+let graphMetric = "temperature";
+
+
+/* CURRENT DATA */
+
+onValue(
+    ref(db, "current"),
+    (snapshot) => {
+
+        const data =
+            snapshot.val();
+
+        if (!data) return;
+
+
+        if (data.temperature !== undefined) {
+
+            temperature.textContent =
+                Number(
+                    data.temperature
+                ).toFixed(1);
+
+        }
+
+
+        if (data.humidity !== undefined) {
+
+            humidity.textContent =
+                Number(
+                    data.humidity
+                ).toFixed(1);
+
+        }
+
+
+        if (data.ldr !== undefined) {
+
+            ldr.textContent =
+                data.ldr;
+
+        }
+
+
+        if (data.bulbState !== undefined) {
+
+            const state =
+                Boolean(
+                    data.bulbState
+                );
+
+            bulbStatus.textContent =
+                state ? "ON" : "OFF";
+
+            manualBulbStatus.textContent =
+                state ? "ON" : "OFF";
+
+        }
+
+
+        if (data.mode !== undefined) {
+
+            currentMode =
+                String(
+                    data.mode
+                ).toUpperCase();
+
+            updateModeDisplay();
+
+        }
+
+    }
+);
+
+
+/* CONTROL DATA */
+
+onValue(
+    ref(db, "control"),
+    (snapshot) => {
+
+        const data =
+            snapshot.val();
+
+        if (!data) return;
+
+
+        if (data.ldrThreshold !== undefined) {
+
+            threshold.textContent =
+                data.ldrThreshold;
+
+        }
+
+
+        if (data.mode !== undefined) {
+
+            currentMode =
+                String(
+                    data.mode
+                ).toUpperCase();
+
+            updateModeDisplay();
+
+        }
+
+    }
+);
+
+
+/* MODE DISPLAY */
+
+function updateModeDisplay() {
+
+    modeElement.textContent =
+        currentMode;
+
+
+    if (
+        currentMode === "AUTO" ||
+        currentMode === "AUTOMATIC"
+    ) {
+
+        autoBtn.classList.add("active");
+
+        manualBtn.classList.remove("active");
+
+        turnOnBtn.disabled = true;
+
+        turnOffBtn.disabled = true;
+
+    } else {
+
+        autoBtn.classList.remove("active");
+
+        manualBtn.classList.add("active");
+
+        turnOnBtn.disabled = false;
+
+        turnOffBtn.disabled = false;
+
     }
 
-    function setBulbUI(on) {
-      document.getElementById('bulbOrb').classList.toggle('on', on);
-      document.getElementById('bulbStatus').textContent = on ? 'ON' : 'OFF';
-      document.getElementById('bulbToggle').checked = on;
+}
+
+
+/* AUTO MODE */
+
+autoBtn.addEventListener(
+    "click",
+    async () => {
+
+        await set(
+            ref(db, "control/mode"),
+            "AUTOMATIC"
+        );
+
+    }
+);
+
+
+/* MANUAL MODE */
+
+manualBtn.addEventListener(
+    "click",
+    async () => {
+
+        await set(
+            ref(db, "control/mode"),
+            "MANUAL"
+        );
+
+    }
+);
+
+
+/* BULB ON */
+
+turnOnBtn.addEventListener(
+    "click",
+    async () => {
+
+        if (
+            currentMode === "AUTO" ||
+            currentMode === "AUTOMATIC"
+        ) return;
+
+
+        await set(
+            ref(db, "control/bulbState"),
+            true
+        );
+
+    }
+);
+
+
+/* BULB OFF */
+
+turnOffBtn.addEventListener(
+    "click",
+    async () => {
+
+        if (
+            currentMode === "AUTO" ||
+            currentMode === "AUTOMATIC"
+        ) return;
+
+
+        await set(
+            ref(db, "control/bulbState"),
+            false
+        );
+
+    }
+);
+
+
+/* HISTORY */
+
+onValue(
+    ref(db, "history"),
+    (snapshot) => {
+
+        const data =
+            snapshot.val() || {};
+
+
+        historyData =
+            data;
+
+
+        const entries =
+            Object.entries(data);
+
+
+        historyCount.textContent =
+            entries.length;
+
+
+        historyBody.innerHTML =
+            "";
+
+
+        const latest =
+            entries.length
+                ? entries[entries.length - 1][1]
+                : null;
+
+
+        if (latest) {
+
+            if (
+                latest.temperature !== undefined
+            ) {
+
+                historyTemperature.textContent =
+                    Number(
+                        latest.temperature
+                    ).toFixed(1);
+
+            }
+
+
+            if (
+                latest.ldr !== undefined
+            ) {
+
+                historyLdr.textContent =
+                    latest.ldr;
+
+            }
+
+        }
+
+
+        entries
+            .slice()
+            .reverse()
+            .slice(0, 30)
+            .forEach(
+                ([id, item]) => {
+
+                    const row =
+                        document.createElement(
+                            "tr"
+                        );
+
+
+                    row.innerHTML = `
+
+                        <td>
+                            ${item.timestamp || "-"}
+                        </td>
+
+                        <td>
+                            ${item.temperature ?? "-"}
+                        </td>
+
+                        <td>
+                            ${item.humidity ?? "-"}
+                        </td>
+
+                        <td>
+                            ${item.ldr ?? "-"}
+                        </td>
+
+                        <td>
+                            ${item.bulbState ? "ON" : "OFF"}
+                        </td>
+
+                        <td>
+                            ${item.mode || "-"}
+                        </td>
+
+                    `;
+
+
+                    historyBody.appendChild(
+                        row
+                    );
+
+                }
+            );
+
+
+        renderHistoryGraph();
+
+    }
+);
+
+
+/* HISTORY GRAPH */
+
+function renderHistoryGraph() {
+
+    const canvas =
+        document.getElementById(
+            "historyChart"
+        );
+
+
+    if (!canvas) return;
+
+
+    const entries =
+        Object.entries(
+            historyData
+        );
+
+
+    if (historyChart) {
+
+        historyChart.destroy();
+
+        historyChart = null;
+
     }
 
-    function setMode(mode, save = true) {
-      currentMode = mode;
-      document.getElementById('manualTab').classList.toggle('active', mode === 'manual');
-      document.getElementById('autoTab').classList.toggle('active', mode === 'automatic');
-      document.getElementById('thresholdRow').classList.toggle('show', mode === 'automatic');
-      document.getElementById('manualNote').style.display = mode === 'manual' ? 'block' : 'none';
-      if (save) saveSettings();
-      try {
-        firebase.database().ref('settings/mode').set(mode);
-      } catch (e) {}
-    }
 
-    function saveSettings() {
-      const threshold = parseInt(document.getElementById('thresholdSlider').value, 10);
-      db.collection('users').doc(currentUser.uid).set({
-        mode: currentMode,
-        threshold: threshold
-      }, { merge: true });
-      try {
-        firebase.database().ref('settings/threshold').set(threshold);
-      } catch (e) {}
-    }
+    const ordered =
+        entries
+            .map(
+                ([id, item]) => item
+            )
+            .reverse()
+            .slice(-30);
 
-    let historyCache = [];
-    function renderHistory(rows) {
-      historyCache = rows;
-      const tbody = document.getElementById('historyBody');
-      const empty = document.getElementById('emptyState');
-      tbody.innerHTML = '';
-      if (!rows.length) {
-        empty.style.display = 'block';
-        return;
-      }
-      empty.style.display = 'none';
-      rows.forEach((r) => {
-        const tr = document.createElement('tr');
-        const time = r.timestamp ? new Date(r.timestamp).toLocaleString() : '—';
-        tr.innerHTML = `
-          <td>${time}</td>
-          <td>${r.temperature ?? '—'}</td>
-          <td>${r.humidity ?? '—'}</td>
-          <td>${r.ldr ?? '—'}</td>
-          <td>${r.bulb ? 'ON' : 'OFF'}</td>
-          <td>${r.mode ?? '—'}</td>
-        `;
-        tbody.appendChild(tr);
-      });
-    }
 
-    function exportCSV() {
-      if (!historyCache.length) {
-        alert('No data to export yet.');
-        return;
-      }
-      let csv = 'Timestamp,Temperature,Humidity,LDR,Bulb,Mode\n';
-      historyCache.forEach((r) => {
-        const time = r.timestamp ? new Date(r.timestamp).toISOString() : '';
-        csv += `${time},${r.temperature ?? ''},${r.humidity ?? ''},${r.ldr ?? ''},${r.bulb ? 'ON' : 'OFF'},${r.mode ?? ''}\n`;
-      });
-      const blob = new Blob([csv], { type: 'text/csv' });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `iotp-history-${Date.now()}.csv`;
-      a.click();
-      URL.revokeObjectURL(url);
-    }
-  </script>
+    const labels =
+        ordered.map(
+            item =>
+                item.timestamp || "-"
+        );
+
+
+    const values =
+        ordered.map(
+            item =>
+                Number(
+                    item[graphMetric] ?? 0
+                )
+        );
+
+
+    const label =
+        graphMetric === "temperature"
+            ? "Temperature (°C)"
+            : graphMetric === "humidity"
+                ? "Humidity (%)"
+                : "Light Level (LDR)";
+
+
+    historyChart =
+        new Chart(
+            canvas,
+            {
+
+                type: "line",
+
+                data: {
+
+                    labels: labels,
+
+                    datasets: [{
+
+                        label: label,
+
+                        data: values,
+
+                        borderColor:
+                            "#e87928",
+
+                        backgroundColor:
+                            "rgba(232, 121, 40, 0.12)",
+
+                        borderWidth: 2,
+
+                        pointRadius: 3,
+
+                        pointHoverRadius: 5,
+
+                        tension: 0.3,
+
+                        fill: true
+
+                    }]
+
+                },
+
+
+                options: {
+
+                    responsive: true,
+
+                    maintainAspectRatio: false,
+
+
+                    interaction: {
+
+                        intersect: false,
+
+                        mode: "index"
+
+                    },
+
+
+                    plugins: {
+
+                        legend: {
+
+                            labels: {
+
+                                color: "#111",
+
+                                font: {
+
+                                    family:
+                                        "Arial"
+
+                                }
+
+                            }
+
+                        }
+
+                    },
+
+
+                    scales: {
+
+                        x: {
+
+                            ticks: {
+
+                                color: "#666",
+
+                                maxTicksLimit: 8,
+
+                                font: {
+
+                                    family:
+                                        "Arial",
+
+                                    size: 10
+
+                                }
+
+                            },
+
+
+                            grid: {
+
+                                color:
+                                    "rgba(0,0,0,0.08)"
+
+                            }
+
+                        },
+
+
+                        y: {
+
+                            ticks: {
+
+                                color: "#666",
+
+                                font: {
+
+                                    family:
+                                        "Arial"
+
+                                }
+
+                            },
+
+
+                            grid: {
+
+                                color:
+                                    "rgba(0,0,0,0.08)"
+
+                            },
+
+
+                            title: {
+
+                                display: true,
+
+                                text: label,
+
+                                color: "#555",
+
+                                font: {
+
+                                    family:
+                                        "Arial"
+
+                                }
+
+                            }
+
+                        }
+
+                    }
+
+                }
+
+            }
+        );
+
+}
+
+
+/* GRAPH SELECTOR */
+
+document
+    .getElementById(
+        "graphMetric"
+    )
+    .addEventListener(
+        "change",
+        (event) => {
+
+            graphMetric =
+                event.target.value;
+
+            renderHistoryGraph();
+
+        }
+    );
+
+
+/* CSV DOWNLOAD */
+
+document
+    .getElementById("downloadCsv")
+    .addEventListener(
+        "click",
+        () => {
+
+            const entries =
+                Object.entries(
+                    historyData
+                );
+
+
+            if (!entries.length) {
+
+                alert(
+                    "No history data available."
+                );
+
+                return;
+
+            }
+
+
+            let csv =
+                "Timestamp,Temperature,Humidity,LDR,Bulb,Mode\n";
+
+
+            entries.forEach(
+                ([id, item]) => {
+
+                    csv +=
+                        `"${item.timestamp || ""}",` +
+                        `"${item.temperature ?? ""}",` +
+                        `"${item.humidity ?? ""}",` +
+                        `"${item.ldr ?? ""}",` +
+                        `"${item.bulbState ? "ON" : "OFF"}",` +
+                        `"${item.mode || ""}"\n`;
+
+                }
+            );
+
+
+            const blob =
+                new Blob(
+                    [csv],
+                    {
+                        type:
+                            "text/csv"
+                    }
+                );
+
+
+            const url =
+                URL.createObjectURL(
+                    blob
+                );
+
+
+            const link =
+                document.createElement(
+                    "a"
+                );
+
+
+            link.href =
+                url;
+
+
+            link.download =
+                "smart-lighting-history.csv";
+
+
+            link.click();
+
+
+            URL.revokeObjectURL(
+                url
+            );
+
+        }
+    );
+
+
+updateModeDisplay();
+
+</script>
+
 </body>
+
 </html>
