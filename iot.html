@@ -854,7 +854,8 @@ Relay (GPIO 26) ◄┘      │                                            │
                         │                    realtime listeners      │ writes /control
                         └──────────────── Web dashboard (Firebase Hosting, Auth) ──┘
                                           • live temperature / humidity / light / bulb
-                                          • MANUAL / AUTOMATIC mode, ON / OFF, threshold</pre>
+                                          • MANUAL / AUTOMATIC mode, ON / OFF
+                                          • shows the current LDR threshold</pre>
         <h4>Hardware &amp; wiring</h4>
         <div class="table-wrap"><table class="doc-table">
           <thead><tr><th>Component</th><th>Connection</th><th>Role</th></tr></thead>
@@ -937,7 +938,8 @@ Relay (GPIO 26) ◄┘      │                                            │
                                                      ▼
                               Web dashboard (Firebase Hosting + Auth)
                               ├── live readings & bulb status
-                              ├── MANUAL / AUTO mode, ON / OFF, threshold
+                              ├── MANUAL / AUTO mode, ON / OFF
+                              ├── current LDR threshold (display only)
                               ├── Reading History table
                               ├── Sensor History Graph (Chart.js)
                               └── CSV download</pre>
@@ -971,11 +973,11 @@ digitalWrite(RELAY_PIN, bulbState ? LOW : HIGH);   // active-low relay</pre>
 
       <div class="doc-block">
         <h3>5. LDR Threshold &amp; Calibration Method</h3>
-        <p>The raw LDR value depends on the module's resistor and the room's lighting, so a fixed number can't suit every location. The threshold is stored in Firebase (<code>/control/ldrThreshold</code>, default <code>2000</code>) and edited from the dashboard. The ESP32 picks up a new value without re-flashing.</p>
+        <p>The raw LDR value depends on the module's resistor and the room's lighting, so a fixed number can't suit every location. The threshold is stored in Firebase (<code>/control/ldrThreshold</code>, default <code>2000</code>) and the dashboard displays the current value. The ESP32 re-reads it every 3 s, so changing the value in the Firebase console takes effect without re-flashing.</p>
         <ol>
           <li>Watch the live light level on the dashboard with normal room light.</li>
           <li>Cover or shade the LDR to simulate darkness and note the higher value.</li>
-          <li>Set the threshold between the two readings, so the bulb turns on when the room is dark and off when it is bright.</li>
+          <li>Set <code>/control/ldrThreshold</code> in the Firebase console to a value between the two readings, so the bulb turns on when the room is dark and off when it is bright. The dashboard then shows the new threshold.</li>
         </ol>
       </div>
 
@@ -1530,7 +1532,7 @@ void logHistory() {
 
       <div class="doc-block">
         <h3>10. Problems Encountered &amp; Solutions</h3>
-        <p><strong>LDR calibration:</strong> a fixed threshold behaved differently depending on room lighting. <strong>Fix:</strong> store the threshold in <code>/control</code> and make it editable from the dashboard, so it can be recalibrated live.</p>
+        <p><strong>LDR calibration:</strong> a fixed threshold behaved differently depending on room lighting. <strong>Fix:</strong> store the threshold in <code>/control</code> instead of hard-coding it. The ESP32 reads it from Firebase, so it can be recalibrated live from the Firebase console, and the dashboard shows the value in use.</p>
         <p><strong>Accurate timestamps:</strong> the ESP32 has no real-time clock. <strong>Fix:</strong> synchronise with <code>pool.ntp.org</code> using <code>configTime()</code> and stamp each record with local time.</p>
       </div>
 
