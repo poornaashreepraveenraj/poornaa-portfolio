@@ -186,7 +186,7 @@
 
       <div class="doc-block">
         <h3>6. HTML Interface &amp; How It Sends Commands</h3>
-        <p>The page is generated inside <code>handleRoot()</code> as a string and contains two styled links, <strong>TURN LED ON</strong> (<code>href="/on"</code>) and <strong>TURN LED OFF</strong> (<code>href="/off"</code>). Clicking one makes the browser issue a GET request to that path. The ESP32 matches the path with <code>server.on()</code>, changes the pin, then redirects back to the page so the user can keep clicking.</p>
+        <p>The page is stored in the sketch as one HTML template (<code>PAGE</code>). On each request <code>handleRoot()</code> fills in the current state, so it shows <strong>LED IS OFF</strong> or <strong>LED IS ON</strong> with a matching status icon, plus a GPIO / Wi-Fi / controller strip. The two buttons are plain links, <strong>TURN LED ON</strong> (<code>href="/on"</code>) and <strong>TURN LED OFF</strong> (<code>href="/off"</code>). Clicking one makes the browser send a GET request to that path. The ESP32 matches it with <code>server.on()</code>, switches the pin, remembers the new state and redirects back to <code>/</code>, so the page always shows the LED's real state.</p>
         <div class="evidence-gallery">
           <figure class="evidence-card"><a href="assets/iot/image2.png" target="_blank" rel="noopener" aria-label="Open full-size image: ESP32 LED control web page showing the LED is OFF with Turn LED On and Turn LED Off buttons"><img src="assets/iot/web/image2.webp" alt="ESP32 LED control web page showing the LED is OFF with Turn LED On and Turn LED Off buttons" width="1400" height="668" loading="lazy" decoding="async"></a><figcaption>Fig 1.1 — Web interface served by the ESP32 (LED currently OFF).</figcaption></figure>
         </div>
@@ -194,11 +194,13 @@
 
       <div class="doc-block">
         <h3>7. Complete Source Code</h3>
-        <p>Key sections: <code>WiFi.begin()</code> connects and prints the IP; <code>server.on("/on", handleOn)</code> maps routes to handlers; <code>digitalWrite(LED_PIN, HIGH/LOW)</code> drives the LED; <code>server.handleClient()</code> in <code>loop()</code> processes incoming requests.</p>
+        <p><strong>Key sections:</strong> <code>WiFi.begin()</code> connects (with a time limit) and prints the IP; the <code>PAGE</code> template holds the interface; <code>server.on("/on", handleOn)</code> maps routes to handlers, which set <code>ledOn</code> and call <code>digitalWrite(LED_PIN, HIGH/LOW)</code>; <code>handleRoot()</code> fills in the state and sends the page as UTF-8; <code>server.handleClient()</code> in <code>loop()</code> processes incoming requests.</p>
         <details class="code-details"><summary>Show full source — task1_esp32_webserver.ino</summary><pre class="code-pre"><code>/*
  * TASK 01: ESP32 Web Server &amp; Built-in LED Control
  * Board: ESP32 Dev Module
  * GPIO: Pin 2 (Onboard LED)
+ * Serves the "BUILT-IN LED" control page: live LED status, ON/OFF buttons
+ * and a GPIO / Wi-Fi / controller info strip.
  * Sanitized for public release - Replace WiFi credentials before upload.
  */
 
@@ -206,34 +208,116 @@
 #include &lt;WebServer.h&gt;
 
 // Replace with your local Wi-Fi credentials
-const char* ssid = &quot;YOUR_WIFI_SSID_HERE&quot;;
-const char* password = &quot;YOUR_WIFI_PASSWORD_HERE&quot;;
+const char* ssid = "YOUR_WIFI_SSID_HERE";
+const char* password = "YOUR_WIFI_PASSWORD_HERE";
 
 WebServer server(80);
 const int LED_PIN = 2;
+bool ledOn = false;
+
+// Page template. %ICON%, %STATE%, %DETAIL% and %ONCLASS% are filled in per request.
+const char PAGE[] PROGMEM = R"rawliteral(
+&lt;!DOCTYPE html&gt;
+&lt;html lang="en"&gt;
+&lt;head&gt;
+&lt;meta charset="UTF-8"&gt;
+&lt;meta name="viewport" content="width=device-width, initial-scale=1"&gt;
+&lt;title&gt;ESP32 Built-in LED&lt;/title&gt;
+&lt;style&gt;
+  :root { --cream:#F3E7CC; --card:#EDDFBD; --ink:#243B4A; --steel:#577587; --gold:#D4B574; }
+  * { box-sizing:border-box; margin:0; padding:0; }
+  body { background:var(--cream); color:var(--ink); font-family:Arial, Helvetica, sans-serif;
+         min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:24px 16px; }
+  .rule { width:100%; max-width:860px; height:3px; background:var(--ink); position:relative; margin-bottom:40px; }
+  .rule::after { content:""; position:absolute; left:50%; top:-7px; width:12px; height:12px;
+                 background:var(--gold); border:2px solid var(--ink); transform:translateX(-50%) rotate(45deg); }
+  .frame { width:100%; max-width:860px; border:4px solid var(--ink); background:var(--card);
+           box-shadow:10px 10px 0 var(--ink); padding:14px; }
+  .inner { border:1.5px solid var(--steel); padding:36px 28px 28px; }
+  .top { display:flex; justify-content:space-between; align-items:flex-start; gap:16px; flex-wrap:wrap; }
+  h1 { font-family:Georgia, 'Times New Roman', serif; font-size:28px; letter-spacing:0.02em; }
+  .sub { font-size:12px; letter-spacing:0.12em; color:var(--steel); margin-top:4px; }
+  .badge { border:2px solid var(--ink); background:var(--gold); padding:6px 12px;
+           font-size:12px; font-weight:bold; letter-spacing:0.08em; }
+  .status { text-align:center; margin:36px 0; }
+  .ring { width:200px; height:200px; margin:0 auto 24px; border-radius:50%; border:3px solid var(--steel);
+          display:flex; align-items:center; justify-content:center; }
+  .dot { width:176px; height:176px; border-radius:50%; border:5px solid var(--ink); background:#D9CFB6;
+         display:flex; align-items:center; justify-content:center; font-size:72px; }
+  .on .dot { background:var(--gold); }
+  h2 { font-family:Georgia, 'Times New Roman', serif; font-size:36px; letter-spacing:0.06em; }
+  .detail { font-size:14px; color:var(--steel); margin-top:6px; }
+  .buttons { display:grid; grid-template-columns:1fr 1fr; gap:16px; margin-top:12px; }
+  .btn { display:block; text-align:center; padding:18px 12px; border:3px solid var(--ink);
+         box-shadow:6px 6px 0 var(--ink); font-weight:bold; font-size:14px; letter-spacing:0.18em;
+         text-decoration:none; transition:transform .1s, box-shadow .1s; }
+  .btn:active { transform:translate(4px,4px); box-shadow:2px 2px 0 var(--ink); }
+  .btn-on { background:var(--steel); color:#FFFFFF; }
+  .btn-off { background:var(--gold); color:var(--ink); }
+  .stats { display:grid; grid-template-columns:repeat(3,1fr); border-top:1.5px solid var(--steel);
+           margin-top:36px; padding-top:20px; text-align:center; }
+  .stats div + div { border-left:1px solid var(--steel); }
+  .stats b { display:block; font-family:Georgia, 'Times New Roman', serif; font-size:22px; }
+  .stats span { font-size:11px; letter-spacing:0.14em; color:var(--steel); }
+  @media (max-width:520px) { .buttons { grid-template-columns:1fr; } h2 { font-size:28px; } }
+&lt;/style&gt;
+&lt;/head&gt;
+&lt;body&gt;
+  &lt;div class="rule"&gt;&lt;/div&gt;
+  &lt;div class="frame"&gt;
+    &lt;div class="inner"&gt;
+      &lt;div class="top"&gt;
+        &lt;div&gt;
+          &lt;h1&gt;BUILT-IN LED&lt;/h1&gt;
+          &lt;p class="sub"&gt;ESP32 DEV MODULE &amp;bull; GPIO 2&lt;/p&gt;
+        &lt;/div&gt;
+        &lt;div class="badge"&gt;&amp;#9679; CONNECTED&lt;/div&gt;
+      &lt;/div&gt;
+
+      &lt;div class="status %ONCLASS%"&gt;
+        &lt;div class="ring"&gt;&lt;div class="dot"&gt;%ICON%&lt;/div&gt;&lt;/div&gt;
+        &lt;h2&gt;LED IS %STATE%&lt;/h2&gt;
+        &lt;p class="detail"&gt;%DETAIL%&lt;/p&gt;
+      &lt;/div&gt;
+
+      &lt;div class="buttons"&gt;
+        &lt;a class="btn btn-on" href="/on"&gt;TURN LED ON&lt;/a&gt;
+        &lt;a class="btn btn-off" href="/off"&gt;TURN LED OFF&lt;/a&gt;
+      &lt;/div&gt;
+
+      &lt;div class="stats"&gt;
+        &lt;div&gt;&lt;b&gt;02&lt;/b&gt;&lt;span&gt;GPIO PIN&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;Wi-Fi&lt;/b&gt;&lt;span&gt;CONNECTION&lt;/span&gt;&lt;/div&gt;
+        &lt;div&gt;&lt;b&gt;ESP32&lt;/b&gt;&lt;span&gt;CONTROLLER&lt;/span&gt;&lt;/div&gt;
+      &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+)rawliteral";
 
 void handleRoot() {
-  String html = &quot;&lt;!DOCTYPE html&gt;&lt;html&gt;&lt;head&gt;&lt;meta name=&#x27;viewport&#x27; content=&#x27;width=device-width, initial-scale=1&#x27;&gt;&quot;;
-  html += &quot;&lt;title&gt;ESP32 LED Control&lt;/title&gt;&quot;;
-  html += &quot;&lt;style&gt;body{font-family:Arial;text-align:center;margin-top:50px;}&quot;;
-  html += &quot;.btn{display:inline-block;padding:15px 30px;font-size:18px;color:white;border:none;border-radius:8px;text-decoration:none;margin:10px;}&quot;;
-  html += &quot;.on{background-color:#4CAF50;} .off{background-color:#f44336;}&lt;/style&gt;&lt;/head&gt;&lt;body&gt;&quot;;
-  html += &quot;&lt;h2&gt;ESP32 Web Server LED Control&lt;/h2&gt;&quot;;
-  html += &quot;&lt;a href=&#x27;/on&#x27; class=&#x27;btn on&#x27;&gt;TURN LED ON&lt;/a&gt;&quot;;
-  html += &quot;&lt;a href=&#x27;/off&#x27; class=&#x27;btn off&#x27;&gt;TURN LED OFF&lt;/a&gt;&quot;;
-  html += &quot;&lt;/body&gt;&lt;/html&gt;&quot;;
-  server.send(200, &quot;text/html&quot;, html);
+  String html = FPSTR(PAGE);
+  html.replace("%ONCLASS%", ledOn ? "on" : "");
+  html.replace("%ICON%", ledOn ? "&amp;#9679;" : "&amp;#9675;");
+  html.replace("%STATE%", ledOn ? "ON" : "OFF");
+  html.replace("%DETAIL%", ledOn ? "The built-in indicator is currently active."
+                                 : "The built-in indicator is currently inactive.");
+  // Declaring UTF-8 here (and in the &lt;meta&gt; tag) keeps symbols from showing as garbled text
+  server.send(200, "text/html; charset=utf-8", html);
 }
 
 void handleOn() {
+  ledOn = true;
   digitalWrite(LED_PIN, HIGH);
-  server.sendHeader(&quot;Location&quot;, &quot;/&quot;);
+  server.sendHeader("Location", "/");
   server.send(303);
 }
 
 void handleOff() {
+  ledOn = false;
   digitalWrite(LED_PIN, LOW);
-  server.sendHeader(&quot;Location&quot;, &quot;/&quot;);
+  server.sendHeader("Location", "/");
   server.send(303);
 }
 
@@ -242,24 +326,34 @@ void setup() {
   pinMode(LED_PIN, OUTPUT);
   digitalWrite(LED_PIN, LOW);
 
-  Serial.println(&quot;Connecting to Wi-Fi...&quot;);
+  Serial.println("Connecting to Wi-Fi...");
   WiFi.begin(ssid, password);
-  while (WiFi.status() != WL_CONNECTED) {
+
+  // Give up after ~20 s instead of printing dots forever, and show why
+  int attempts = 0;
+  while (WiFi.status() != WL_CONNECTED &amp;&amp; attempts &lt; 40) {
     delay(500);
-    Serial.print(&quot;.&quot;);
+    Serial.print(".");
+    attempts++;
+  }
+  Serial.println("");
+
+  if (WiFi.status() != WL_CONNECTED) {
+    Serial.print("Wi-Fi connection FAILED, status code ");
+    Serial.println(WiFi.status());
+    return;
   }
 
-  Serial.println(&quot;&quot;);
-  Serial.println(&quot;Wi-Fi connected.&quot;);
-  Serial.print(&quot;IP address: &quot;);
+  Serial.println("Wi-Fi connected.");
+  Serial.print("IP address: ");
   Serial.println(WiFi.localIP());
 
-  server.on(&quot;/&quot;, handleRoot);
-  server.on(&quot;/on&quot;, handleOn);
-  server.on(&quot;/off&quot;, handleOff);
+  server.on("/", handleRoot);
+  server.on("/on", handleOn);
+  server.on("/off", handleOff);
 
   server.begin();
-  Serial.println(&quot;HTTP server started&quot;);
+  Serial.println("HTTP server started");
 }
 
 void loop() {
@@ -283,6 +377,7 @@ void loop() {
         <h3>9. Problems Encountered &amp; Solutions</h3>
         <p><strong>Problem:</strong> the ESP32 would not join the Wi-Fi network. The first sketch was connected to my phone hotspot, and the Serial Monitor just printed dots forever with no error. <strong>Solution:</strong> I added a limit to the connection loop so it stops after a number of attempts and prints <code>WiFi.status()</code>. That showed "Wi-Fi connection FAILED, status code 6" (disconnected) instead of hanging. I then checked the SSID and password and moved the board to the lab Wi-Fi network, after which it connected and printed its IP address.</p>
         <p><strong>Problem:</strong> the control page only opened when my laptop was on the same Wi-Fi network as the ESP32. From any other network the IP address did not respond. <strong>Solution:</strong> for Task 1 I kept both devices on the same network. This limitation is the reason Task 2 moves control to the cloud with MQTT.</p>
+        <p><strong>Problem:</strong> the symbols on the page showed up as garbled text, for example <code>â—‹</code> instead of a circle icon and <code>Â€¢</code> instead of a bullet (visible in Fig 1.1). The ESP32 sent the page without saying it was UTF-8, so the browser read the bytes as a different character set. <strong>Solution:</strong> declare the encoding twice: a <code>&lt;meta charset="UTF-8"&gt;</code> tag in the page and <code>"text/html; charset=utf-8"</code> in <code>server.send()</code>. The symbols are also written as HTML entities (<code>&amp;#9679;</code>), which display correctly whatever the encoding.</p>
       </div>
 
       <div class="doc-block">
@@ -743,10 +838,11 @@ ESP32 receives "ON"  ──► GPIO 23 HIGH ──► relay ──► bulb ON</p
 
       <div class="doc-block">
         <h3>11. Problems &amp; Solutions</h3>
-        <p><strong>Problem:</strong> the obvious approach would be to add voice handling to the ESP32 code, which means more firmware and re-flashing.</p>
-        <p><strong>Solution:</strong> keep the Adafruit IO feed as the control layer and let IFTTT write to it. Because the Task 2 firmware already accepted <code>ON</code>/<code>OFF</code>, no firmware change was needed.</p>
+        <p><strong>Problem:</strong> the obvious approach was to add voice handling to the ESP32 code, which means more firmware and re-flashing. <strong>Solution:</strong> keep the Adafruit IO feed as the control layer and let IFTTT write to it. The Task 2 firmware already accepted <code>1</code> / <code>ON</code> and <code>0</code> / <code>OFF</code>, so no firmware change was needed.</p>
+        <p><strong>Problem:</strong> a Google Assistant trigger only sends one fixed value, so a single applet cannot switch the bulb both ways. <strong>Solution:</strong> two applets, one per command: "activate bulb ON" sends <code>1</code> and "activate bulb OFF" sends <code>0</code> to the same relay feed (Fig 3.1).</p>
+        <p><strong>Problem:</strong> the value IFTTT sends has to match exactly what the ESP32 checks for. Anything else, such as "on" with extra spaces or a different word, is ignored and the bulb does not react. <strong>Solution:</strong> use the same values as the Adafruit IO toggle block (<code>1</code> and <code>0</code>, Fig 2.1) in the applets' "send data" field, so voice and dashboard write identical data.</p>
+        <p><strong>Problem:</strong> Assistant only fires the applet when the exact phrase is spoken, and longer phrases were easy to say differently. <strong>Solution:</strong> short, distinct phrases ("activate bulb ON" / "activate bulb OFF"), tested several times each (section 10).</p>
       </div>
-
       <div class="doc-block">
         <h3>12. What I Learned About Cloud-Based Automation &amp; Reflection</h3>
         <p>I learned that automation can be layered on top of an existing IoT system: the trigger layer (Google Assistant + IFTTT), the messaging layer (Adafruit IO) and the device layer (ESP32) are independent, so new triggers such as schedules or other services can be added without touching hardware. The trade-off is depending on several third-party clouds, which adds latency and more points of failure.</p>
@@ -1533,8 +1629,10 @@ void logHistory() {
 
       <div class="doc-block">
         <h3>10. Problems Encountered &amp; Solutions</h3>
-        <p><strong>LDR calibration:</strong> a fixed threshold behaved differently depending on room lighting. <strong>Fix:</strong> store the threshold in <code>/control</code> instead of hard-coding it. The ESP32 reads it from Firebase, so it can be recalibrated live from the Firebase console, and the dashboard shows the value in use.</p>
-        <p><strong>Accurate timestamps:</strong> the ESP32 has no real-time clock. <strong>Fix:</strong> synchronise with <code>pool.ntp.org</code> using <code>configTime()</code> and stamp each record with local time.</p>
+        <p><strong>Problem: the LDR threshold.</strong> On this LDR module the reading goes <em>up</em> as the room gets darker (the dashboard notes "Higher than threshold = bulb ON", Fig 5.2). With ordinary evening room light the history log shows readings of 2,544 to 3,024 (Fig 5.4), all above the default threshold of 2000. In automatic mode the bulb would have stayed on in a lit room. <strong>Solution:</strong> calibrate from real readings (section 5) and keep the threshold in <code>/control/ldrThreshold</code> instead of hard-coding it. The ESP32 re-reads it every 3 s, so it can be adjusted from the Firebase console without re-flashing.</p>
+        <p><strong>Problem: mode names.</strong> The dashboard records the mode as <code>MANUAL</code> or <code>AUTOMATIC</code> (Fig 5.2, Fig 5.4), while the obvious firmware check is for <code>AUTO</code>. A mismatch in spelling or letter case would silently leave the bulb in its last state. <strong>Solution:</strong> the firmware converts the mode to upper case and accepts both <code>AUTO</code> and <code>AUTOMATIC</code>.</p>
+        <p><strong>Problem: failed DHT11 reads.</strong> The DHT11 sometimes returns no value (<code>NaN</code>), which would write blanks into the log. <strong>Solution:</strong> the firmware only updates temperature and humidity when the new reading is valid and otherwise keeps the last good value. The history table has no empty readings (Fig 5.4).</p>
+        <p><strong>Problem: timestamps.</strong> The ESP32 has no real-time clock, so it doesn't know the date or time on its own. <strong>Solution:</strong> synchronise with <code>pool.ntp.org</code> using <code>configTime()</code>, then stamp each record with <code>strftime("%Y-%m-%d %H:%M:%S")</code>. It returns "N/A" until the clock has synced. The history table shows exactly this format, one record about every 10 s, matching the logging interval of 10,000 ms (Fig 5.4).</p>
       </div>
 
       <div class="doc-block">
