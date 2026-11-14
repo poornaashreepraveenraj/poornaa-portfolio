@@ -7,10 +7,10 @@
 
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Italianno&family=Plus+Jakarta+Sans:ital,wght@0,300..800;1,300..800&family=Space+Grotesk:wght@400;600;700&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Syne:wght@700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
 
-<link rel="stylesheet" href="styles.css">
-<script src="script.js" defer></script>
+<link rel="stylesheet" href="styles.css?v=light-2">
+<script src="script.js?v=light-2" defer></script>
 </head>
 <body>
 
@@ -21,12 +21,10 @@
     <a href="index.html" class="pill-nav-btn pill-brand">
       <span>POORNAA SHREE</span>
     </a>
-    <button class="pill-nav-btn pill-menu" id="menuToggle" aria-label="Toggle Navigation menu">
-      <span class="menu-icon">≡</span> <span>MENU</span>
-    </button>
+    <button class="pill-nav-btn pill-menu" id="menuToggle" aria-label="Toggle navigation menu" aria-controls="navDropdown" aria-expanded="false"><span class="menu-icon" aria-hidden="true">≡</span> <span>MENU</span></button>
   </div>
 
-  <nav class="nav-dropdown" id="navDropdown">
+  <nav class="nav-dropdown" id="navDropdown" aria-label="Main navigation">
     <a href="index.html#home">00 — HOME</a>
     <a href="index.html#about">01 — ABOUT ME</a>
     <a href="index.html#skills">02 — WHAT I DO (SKILLS)</a>
@@ -34,15 +32,16 @@
     <a href="index.html#projects">04 — PORTFOLIO</a>
     <a href="index.html#experience">05 — EXPERIENCE &amp; EDU</a>
     <a href="index.html#protosem">06 — PROTOSEM LOGS</a>
-    <a href="index.html#contact">07 — CONNECTION</a>
+    <a href="iot.html">07 — IOT SYSTEMS ⚡</a>
+    <a href="index.html#contact">08 — CONNECTION</a>
   </nav>
 </header>
 
-<main id="main" style="padding-top: 140px;">
-  <section class="section-block" style="border-top:none;">
+<main id="main" class="subpage-main">
+  <section class="section-block">
     <div class="container">
       <div class="section-label">02 — TECHNICAL SERVICES &amp; PROFICIENCIES</div>
-      <h2 class="section-heading">WHAT I D<span class="flourish">O</span></h2>
+      <h2 class="section-heading"><span class="shiny-text">WHAT I DO</span></h2>
       
       <div class="services-6grid">
         <div class="service-card">
